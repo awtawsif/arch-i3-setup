@@ -1,0 +1,21 @@
+# i3 config file (v4)
+#
+# Basic Configuration
+set $mod Mod1
+
+# Font for window titles and bar
+font pango:Source Code Pro Medium 1
+
+# Default workspace layout
+workspace_layout tabbed
+
+# i3bar configuration
+bar {
+    status_command i3status
+    font pango: Source Code Pro Medium 9
+}
+
+# Include additional configuration files
+include ~/.config/i3/config.d/startup.conf
+include ~/.config/i3/config.d/keybindings.conf
+include ~/.config/i3/config.d/workspaces.conf

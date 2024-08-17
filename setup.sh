@@ -31,7 +31,7 @@ if ! command -v yay &>/dev/null; then
         echo -e "${RED}Failed to build and install yay.${NC}"
         exit 1
     fi
-    cd ~
+    cd ~/i3-wm
     rm -rf /tmp/yay-bin
 else
     echo -e "${GREEN}yay is already installed.${NC}"
@@ -79,7 +79,7 @@ if ! sudo pacman -S --noconfirm brightnessctl lxappearance; then
     exit 1
 fi
 
-# Install terminal emulator (xfce4-terminal instead of alacritty)
+# Install terminal emulator
 echo -e "${YELLOW}Installing XFCE4 Terminal...${NC}"
 if ! sudo pacman -S --noconfirm xfce4-terminal; then
     echo -e "${RED}Failed to install XFCE4 Terminal.${NC}"
@@ -122,8 +122,8 @@ if ! sudo pacman -S --noconfirm ttf-dejavu ttf-liberation noto-fonts noto-fonts-
 fi
 
 # Install utilities
-echo -e "${YELLOW}Installing utilities (neofetch, curl, wget)...${NC}"
-if ! sudo pacman -S --noconfirm neofetch curl wget; then
+echo -e "${YELLOW}Installing utilities (neofetch, curl, wget, xss-lock)...${NC}"
+if ! sudo pacman -S --noconfirm neofetch curl wget xss-lock; then
     echo -e "${RED}Failed to install utilities.${NC}"
     exit 1
 fi
@@ -143,7 +143,7 @@ if ! sudo systemctl start bluetooth; then
     exit 1
 fi
 
-# Install Rofi (replacement for dmenu)
+# Install Rofi
 echo -e "${YELLOW}Installing Rofi application launcher...${NC}"
 if ! sudo pacman -S --noconfirm rofi; then
     echo -e "${RED}Failed to install Rofi.${NC}"

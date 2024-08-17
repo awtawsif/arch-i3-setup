@@ -2,9 +2,15 @@
 #
 # Basic Configuration
 set $mod Mod1
+set $terminal i3-sensible-terminal
+set $launcher rofi -modi drun,run -show drun
+set $filemanager thunar
+set $browser brave
+set $codeeditor code
+set $texteditor mousepad
 
 # Font for window titles and bar
-font pango:Source Code Pro Medium 1
+font pango:monospace 2
 
 # Default workspace layout
 workspace_layout tabbed
@@ -13,6 +19,15 @@ workspace_layout tabbed
 bar {
     status_command i3status
     font pango: Source Code Pro Medium 9
+    colors {
+        background #111111
+        statusline #ffffff
+        focused_workspace #4c7899 #285577 #ffffff
+        active_workspace #333333 #5f676a #ffffff
+        inactive_workspace #222222 #333333 #888888
+        urgent_workspace #900000 #900000 #ffffff
+        binding_mode #2f343a #900000 #ffffff
+    }
 }
 
 # Include additional configuration files

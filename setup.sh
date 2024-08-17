@@ -204,7 +204,7 @@ if ! rm -f $I3_CONFIG_FILE; then
 fi
 
 # Copy your custom i3config file to the i3 config directory
-if ! cp i3config $I3_CONFIG_FILE; then
+if ! cp config $I3_CONFIG_FILE; then
     echo -e "${RED}Failed to copy the custom i3config file.${NC}"
     exit 1
 fi

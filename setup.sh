@@ -178,6 +178,13 @@ if ! sudo pacman -S --noconfirm btop; then
     exit 1
 fi
 
+# Copy 40-libinput.conf to /etc/X11/xorg.conf.d/
+echo -e "${YELLOW}Copying 40-libinput.conf to /etc/X11/xorg.conf.d/...${NC}"
+if ! sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/; then
+    echo -e "${RED}Failed to copy 40-libinput.conf.${NC}"
+    exit 1
+fi
+
 # Copy .i3status.conf to the home directory
 echo -e "${YELLOW}Copying .i3status.conf to the home directory...${NC}"
 if ! cp .i3status.conf ~/.i3status.conf; then
@@ -204,7 +211,7 @@ fi
 
 # Copy the config.d folder to the i3 config directory
 echo -e "${YELLOW}Copying the config.d folder to the i3 config directory...${NC}"
-if ! cp -r config.d ~/.config/i3/; then
+if ! cp -r config.d ~/.config/i3; then
     echo -e "${RED}Failed to copy the config.d folder.${NC}"
     exit 1
 fi

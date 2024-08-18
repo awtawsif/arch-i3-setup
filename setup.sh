@@ -17,9 +17,13 @@ run_or_fail() {
     "$@" || { echo -e "${RED}Error: Failed to execute $@${NC}"; exit 1; }
 }
 
-# Update system and install dependencies
-echo -e "${YELLOW}Updating system and installing base-devel...${NC}"
-run_or_fail sudo pacman -Syu --noconfirm --needed git base-devel
+# Update system and install brightnessctl
+echo -e "${YELLOW}Updating system and installing brightnessctl...${NC}"
+run_or_fail sudo pacman -Syu --noconfirm --needed git base-devel brightnessctl
+
+# Set brightness to 1%
+echo -e "${YELLOW}Setting brightness to 1%...${NC}"
+run_or_fail sudo brightnessctl set 1%
 
 # Install AUR helper (yay)
 if ! command -v yay &>/dev/null; then
@@ -41,45 +45,19 @@ install_pkg() {
     fi
 }
 
-# Install essential system utilities
-install_pkg "neofetch curl wget xss-lock"
-install_pkg "bluez bluez-utils blueman"
-install_pkg "brightnessctl lxappearance"
-install_pkg "btop"
+# Grouped package installations
+echo -e "${YELLOW}Installing essential packages...${NC}"
+install_pkg "neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance btop man-db kitty thunar thunar-volman thunar-archive-plugin xarchiver gvfs vlc feh zathura zathura-pdf-poppler flameshot dunst rofi code mousepad gnome-themes-standard papirus-icon-theme ttf-dejavu ttf-liberation noto-fonts noto-fonts-emoji"
 
-# Install terminal emulator and file manager
-install_pkg "xfce4-terminal"
-install_pkg "thunar thunar-volman thunar-archive-plugin xarchiver gvfs"
-
-# Install web browser and download manager
+# AUR packages installation
+echo -e "${YELLOW}Installing AUR packages...${NC}"
 install_pkg "brave-bin" "yay"
 install_pkg "freedownloadmanager" "yay"
-
-# Install media and image viewers
-install_pkg "vlc"
-install_pkg "feh"
-install_pkg "zathura zathura-pdf-poppler"
-
-# Install screenshot tool, notification daemon, and Rofi launcher
-install_pkg "flameshot"
-install_pkg "dunst"
-install_pkg "rofi"
-
-# Install code editor and text editor
-install_pkg "code"
-install_pkg "mousepad"
-
-# Install themes and fonts
-install_pkg "gnome-themes-standard papirus-icon-theme"
-install_pkg "ttf-dejavu ttf-liberation noto-fonts noto-fonts-emoji"
-
-# Install tkpacman (AUR package manager front-end)
 install_pkg "tkpacman" "yay"
 
 # Enable and start Bluetooth service
 echo -e "${YELLOW}Enabling and starting Bluetooth service...${NC}"
-run_or_fail sudo systemctl enable bluetooth
-run_or_fail sudo systemctl start bluetooth
+run_or_fail sudo systemctl enable --now bluetooth
 
 # Copy configuration files
 echo -e "${YELLOW}Copying configuration files...${NC}"

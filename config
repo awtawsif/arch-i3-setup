@@ -2,7 +2,7 @@
 #
 # Basic Configuration
 set $mod Mod1
-set $terminal i3-sensible-terminal
+set $terminal alacritty
 set $launcher "rofi -modi drun,run -show drun"
 set $filemanager thunar
 set $browser brave

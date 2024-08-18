@@ -2,7 +2,7 @@
 #
 # Basic Configuration
 set $mod Mod1
-set $terminal alacritty
+set $terminal xfce4-terminal
 set $launcher "rofi -modi drun,run -show drun"
 set $filemanager thunar
 set $browser brave

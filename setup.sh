@@ -47,7 +47,7 @@ install_pkg() {
 
 # Grouped package installations
 echo -e "${YELLOW}Installing essential packages...${NC}"
-install_pkg "neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance btop man-db kitty thunar thunar-volman thunar-archive-plugin xarchiver gvfs vlc feh zathura zathura-pdf-poppler flameshot dunst rofi code mousepad gnome-themes-standard papirus-icon-theme ttf-dejavu ttf-liberation noto-fonts noto-fonts-emoji"
+install_pkg "neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance btop man-db xfce4-terminal thunar thunar-volman thunar-archive-plugin xarchiver gvfs vlc feh zathura zathura-pdf-poppler flameshot dunst rofi code mousepad gnome-themes-standard papirus-icon-theme ttf-dejavu ttf-liberation noto-fonts noto-fonts-emoji"
 
 # AUR packages installation
 echo -e "${YELLOW}Installing AUR packages...${NC}"
@@ -65,7 +65,7 @@ run_or_fail sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/
 run_or_fail cp .i3status.conf ~/.i3status.conf
 run_or_fail cp -r config.d ~/.config/i3
 run_or_fail cp config ~/.config/i3/config
-
+run_or_fail cp .bashrc ~
 # Create necessary directories in the home directory
 echo -e "${YELLOW}Creating necessary directories in the home directory...${NC}"
 run_or_fail mkdir -p ~/Documents ~/Downloads ~/Pictures ~/Music ~/Videos ~/Projects

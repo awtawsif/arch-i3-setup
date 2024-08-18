@@ -10,7 +10,7 @@ set $codeeditor code-bin
 set $texteditor mousepad
 
 # Font for window titles and bar
-font pango:monospace 2
+font pango:monospace 4
 
 # Default workspace layout
 workspace_layout tabbed

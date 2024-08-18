@@ -47,11 +47,12 @@ install_pkg() {
 
 # Grouped package installations
 echo -e "${YELLOW}Installing essential packages...${NC}"
-install_pkg "neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance btop man-db xfce4-terminal thunar thunar-volman thunar-archive-plugin xarchiver gvfs vlc feh zathura zathura-pdf-poppler flameshot dunst rofi code mousepad gnome-themes-standard papirus-icon-theme ttf-dejavu ttf-liberation noto-fonts noto-fonts-emoji"
+install_pkg "neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance btop man-db xfce4-terminal thunar thunar-volman thunar-archive-plugin xarchiver gvfs vlc feh zathura zathura-pdf-poppler flameshot dunst rofi mousepad gnome-themes-standard papirus-icon-theme ttf-dejavu ttf-liberation noto-fonts noto-fonts-emoji"
 
 # AUR packages installation
 echo -e "${YELLOW}Installing AUR packages...${NC}"
 install_pkg "brave-bin" "yay"
+install_pkg "visual-studio-code-bin" "yay"
 install_pkg "freedownloadmanager" "yay"
 install_pkg "tkpacman" "yay"
 

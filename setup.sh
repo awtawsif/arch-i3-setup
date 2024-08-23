@@ -35,40 +35,40 @@ cd -
 rm -rf /tmp/yay-bin
 echo -e "${GREEN}yay AUR helper installed.${NC}"
 
-# Step 4: Install essential packages
-echo -e "${YELLOW}Step 4: Installing essential packages...${NC}"
-sudo pacman -S --noconfirm neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance btop man-db thunar thunar-volman thunar-archive-plugin xarchiver gvfs feh flameshot dunst rofi mousepad gnome-themes-standard papirus-icon-theme ttf-dejavu ttf-liberation noto-fonts noto-fonts-emoji
+# Step 5: Install essential packages
+echo -e "${YELLOW}Step 5: Installing essential packages...${NC}"
+sudo pacman -S --noconfirm xev neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance man-db thunar thunar-volman thunar-archive-plugin xarchiver gvfs feh flameshot dunst rofi mousepad gnome-themes-standard papirus-icon-theme ttf-dejavu ttf-liberation noto-fonts noto-fonts-emoji
 echo -e "${GREEN}Essential packages installed.${NC}"
 
-# Step 5: Install AUR packages using yay
-echo -e "${YELLOW}Step 5: Installing AUR packages with yay...${NC}"
+# Step 6: Install AUR packages using yay
+echo -e "${YELLOW}Step 6: Installing AUR packages with yay...${NC}"
 yay -S --noconfirm brave-bin
 yay -S --noconfirm visual-studio-code-bin
 yay -S --noconfirm tkpacman
 echo -e "${GREEN}AUR packages installed.${NC}"
 
-# Step 6: Enable and start the Bluetooth service
-echo -e "${YELLOW}Step 6: Enabling and starting Bluetooth service...${NC}"
+# Step 7: Enable and start the Bluetooth service
+echo -e "${YELLOW}Step 7: Enabling and starting Bluetooth service...${NC}"
 sudo systemctl enable --now bluetooth
 echo -e "${GREEN}Bluetooth service enabled and started.${NC}"
 
-# Step 7: Copy configuration files
-echo -e "${YELLOW}Step 7: Copying configuration files...${NC}"
+# Step 8: Copy configuration files
+echo -e "${YELLOW}Step 8: Copying configuration files...${NC}"
 sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/
 cp .i3status.conf ~/.i3status.conf
 cp -r config.d ~/.config/i3
 cp config ~/.config/i3/config
 echo -e "${GREEN}Configuration files copied.${NC}"
 
-# Step 8: Create necessary directories in the home directory
-echo -e "${YELLOW}Step 8: Creating necessary directories in the home directory...${NC}"
+# Step 9: Create necessary directories in the home directory
+echo -e "${YELLOW}Step 9: Creating necessary directories in the home directory...${NC}"
 mkdir -p ~/Documents ~/Downloads ~/Pictures ~/Music ~/Videos ~/Projects
 echo -e "${GREEN}Directories created.${NC}"
 
-# Step 9: Clean up package cache
-echo -e "${YELLOW}Step 9: Cleaning up package cache...${NC}"
+# Step 10: Clean up package cache
+echo -e "${YELLOW}Step 10: Cleaning up package cache...${NC}"
 sudo pacman -Sc --noconfirm
 echo -e "${GREEN}Package cache cleaned.${NC}"
 
-# Step 10: Post-installation message
+# Step 11: Post-installation message
 echo -e "${GREEN}Setup completed successfully! Remember to reboot your system.${NC}"

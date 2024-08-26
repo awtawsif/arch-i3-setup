@@ -58,6 +58,7 @@ sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/
 cp .i3status.conf ~/.i3status.conf
 cp -r config.d ~/.config/i3
 cp config ~/.config/i3/config
+cp .bashrc ~
 echo -e "${GREEN}Configuration files copied.${NC}"
 
 # Step 9: Create necessary directories in the home directory

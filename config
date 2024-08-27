@@ -5,8 +5,8 @@ set $mod Mod1
 set $terminal xfce4-terminal
 set $launcher "rofi -modi drun,run -show drun"
 set $filemanager thunar
-set $browser brave
-set $codeeditor code-bin
+set $browser thorium-browser
+set $codeeditor code
 set $texteditor mousepad
 
 # Font for window titles and bar

@@ -12,15 +12,17 @@ LOGFILE=~/setup.log
 exec > >(tee -a $LOGFILE) 2>&1
 echo -e "${BLUE}Logging the installation process to $LOGFILE${NC}"
 
-# Step 1: Update the system and install essential tools
+# Step 1: Update the system, install essential tools and git setup
 echo -e "${YELLOW}Step 1: Updating system and installing brightnessctl...${NC}"
 sudo pacman -Syu --noconfirm --needed git base-devel brightnessctl
+git config --global user.name "Tawsif"
+git config --global user.email tawsif7492@gmail.com
 echo -e "${GREEN}System updated and brightnessctl installed.${NC}"
 
-# Step 2: Set screen brightness to 1%
-echo -e "${YELLOW}Step 2: Setting screen brightness to 1%...${NC}"
-sudo brightnessctl set 1%
-echo -e "${GREEN}Screen brightness set to 1%.${NC}"
+# Step 2: Set screen brightness to 3%
+echo -e "${YELLOW}Step 2: Setting screen brightness to 3%...${NC}"
+sudo brightnessctl set 3%
+echo -e "${GREEN}Screen brightness set to 3%.${NC}"
 
 # Step 3: Install yay AUR helper if it's not already installed
 echo -e "${YELLOW}Step 3: Installing yay AUR helper...${NC}"

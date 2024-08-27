@@ -37,7 +37,7 @@ echo -e "${GREEN}yay AUR helper installed.${NC}"
 
 # Step 5: Install essential packages
 echo -e "${YELLOW}Step 5: Installing essential packages...${NC}"
-sudo pacman -S --noconfirm xev neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance man-db thunar thunar-volman thunar-archive-plugin xarchiver gvfs gvfs-mtp feh flameshot dunst rofi gnome-themes-standard papirus-icon-theme
+sudo pacman -S --noconfirm neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance man-db thunar thunar-volman thunar-archive-plugin xarchiver gvfs gvfs-mtp feh flameshot dunst rofi gnome-themes-standard papirus-icon-theme
 echo -e "${GREEN}Essential packages installed.${NC}"
 
 # Step 6: Install AUR packages using yay

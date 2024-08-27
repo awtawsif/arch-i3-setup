@@ -1,7 +1,9 @@
 # i3 config file (v4)
-#
-# Basic Configuration
+
+# Mod key configuration (Mod1 corresponds to Alt)
 set $mod Mod1
+
+# Applications
 set $terminal xfce4-terminal
 set $launcher "rofi -modi drun,run -show drun"
 set $filemanager thunar
@@ -9,16 +11,35 @@ set $browser thorium-browser
 set $codeeditor code
 set $texteditor mousepad
 
-# Font for window titles and bar
-font pango:monospace 4
+# Font settings
+font pango:Source Code Pro Medium 9
 
-# Default workspace layout
+# Workspace and Window Layout
 workspace_layout tabbed
+workspace_auto_back_and_forth yes
+hide_edge_borders smart_no_gaps
 
-# i3bar configuration
+# Window Icon Configuration
+for_window [all] title_window_icon padding 3px
+
+# Client Colors (Focused, Unfocused, etc.)
+client.focused          #1a73e8   #1e3a8a  #ffffff  #3b82f6  #1e3a8a
+client.focused_inactive #4b5563   #374151  #d1d5db  #6b7280  #374151
+client.unfocused        #4b5563   #1f2937  #9ca3af  #3f4552  #1f2937
+client.urgent           #dc2626   #991b1b  #ffffff  #f87171  #991b1b
+client.placeholder      #111827   #1f2937  #d1d5db  #111827  #1f2937
+client.background       #e5e7eb
+
+# Scratchpad Configuration
+## Move the currently focused window to the scratchpad
+bindsym $mod+Shift+minus move scratchpad
+
+## Show the first scratchpad window
+bindsym $mod+minus scratchpad show
+
+# i3bar Configuration
 bar {
     status_command i3status
-    font pango: Source Code Pro Medium 9
     colors {
         background #111111
         statusline #ffffff

@@ -70,20 +70,22 @@ if [ $? -ne 0 ]; then
 fi
 echo -e "${GREEN}Bluetooth service enabled and started.${NC}"
 
-# Step 8: Copy configuration files
-echo -e "${YELLOW}Step 8: Copying configuration files...${NC}"
+# Step 8: Create necessary directories in the home directory
+echo -e "${YELLOW}Step 8: Creating necessary directories in the home directory...${NC}"
+mkdir -p ~/Documents ~/Downloads ~/Pictures ~/Music ~/Videos ~/Projects
+echo -e "${GREEN}Directories created.${NC}"
+
+# Step 9: Copy configuration files
+echo -e "${YELLOW}Step 9: Copying configuration files...${NC}"
 sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/
 cp .i3status.conf ~/.i3status.conf
 cp -r config.d ~/.config/i3
 cp config ~/.config/i3/config
-rm -r ~/.bashrc
-cp .bashrc ~
+cp .bashrc ~/.bashrc
+cp -r Wallpapers ~/Pictures
+cp -r scripts ~/.config
+chmod +x ~/.config/scripts/set_random_wallpaper.sh
 echo -e "${GREEN}Configuration files copied.${NC}"
-
-# Step 9: Create necessary directories in the home directory
-echo -e "${YELLOW}Step 9: Creating necessary directories in the home directory...${NC}"
-mkdir -p ~/Documents ~/Downloads ~/Pictures ~/Music ~/Videos ~/Projects
-echo -e "${GREEN}Directories created.${NC}"
 
 # Step 10: Clean up package cache
 echo -e "${YELLOW}Step 10: Cleaning up package cache...${NC}"

@@ -3,6 +3,9 @@
 # Mod key configuration (Mod1 corresponds to Alt)
 set $mod Mod1
 
+# Set a Wallpaper
+exec_always --no-startup-id ~/.config/scripts/set_random_wallpaper.sh
+
 # Applications
 set $terminal xfce4-terminal
 set $launcher "rofi -modi drun,run -show drun"

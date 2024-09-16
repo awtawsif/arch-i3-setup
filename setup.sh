@@ -55,24 +55,23 @@ else
     sudo rm -rf /tmp/yay-bin
     echo -e "${GREEN}yay AUR helper installed.${NC}"
 fi
-
-# Step 4: Enable and start the Bluetooth service
-echo -e "${YELLOW}Step 4: Enabling and starting Bluetooth service...${NC}"
-sudo systemctl enable --now bluetooth
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Error enabling or starting Bluetooth service. Exiting...${NC}"
-    exit 1
-fi
-echo -e "${GREEN}Bluetooth service enabled and started.${NC}"
-
-# Step 5: Install essential packages
-echo -e "${YELLOW}Step 5: Installing essential packages...${NC}"
+# Step 4: Install essential packages
+echo -e "${YELLOW}Step 4: Installing essential packages...${NC}"
 sudo pacman -S --noconfirm bash-completion neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance man-db thunar thunar-volman thunar-archive-plugin xarchiver gvfs gvfs-mtp hsetroot flameshot dunst rofi gnome-themes-standard papirus-icon-theme
 if [ $? -ne 0 ]; then
     echo -e "${RED}Error installing essential packages. Exiting...${NC}"
     exit 1
 fi
 echo -e "${GREEN}Essential packages installed.${NC}"
+
+# Step 5: Enable and start the Bluetooth service
+echo -e "${YELLOW}Step 5: Enabling and starting Bluetooth service...${NC}"
+sudo systemctl enable --now bluetooth
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Error enabling or starting Bluetooth service. Exiting...${NC}"
+    exit 1
+fi
+echo -e "${GREEN}Bluetooth service enabled and started.${NC}"
 
 # Step 6: Create necessary directories in the home directory
 echo -e "${YELLOW}Step 6: Creating necessary directories in the home directory...${NC}"

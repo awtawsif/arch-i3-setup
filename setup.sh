@@ -87,6 +87,8 @@ cp config ~/.config/i3/config
 cp .bashrc ~/.bashrc
 cp -r Wallpapers ~/Pictures
 cp -r scripts ~/.config
+mkdir ~/.config/nano
+cp -r nanorc ~/.config/nano/nanorc
 chmod +x ~/.config/scripts/set_random_wallpaper.sh
 echo -e "${GREEN}Configuration files copied.${NC}"
 

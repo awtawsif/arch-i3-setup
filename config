@@ -1,60 +1,76 @@
 # i3 config file (v4)
 
 # Mod key configuration (Mod1 corresponds to Alt)
+# This sets the mod key to the "Alt" key, which will be used in various keybindings.
 set $mod Mod1
 
 # Set a Wallpaper
+# This command runs a script to set a random wallpaper every time i3 starts or reloads.
 exec_always --no-startup-id ~/.config/scripts/set_random_wallpaper.sh
 
 # Applications
-set $terminal xfce4-terminal
-set $launcher "rofi -modi drun,run -show drun"
-set $filemanager thunar
-set $browser thorium-browser
-set $codeeditor code
-set $texteditor mousepad
+# Set up variables for common applications so they can be referenced in keybindings.
+set $terminal xfce4-terminal          # Terminal emulator
+set $launcher "rofi -modi drun,run -show drun" # Application launcher using rofi
+set $filemanager thunar               # File manager
+set $browser thorium-browser          # Web browser
+set $codeeditor code                  # Code editor (e.g., VS Code)
+set $texteditor mousepad              # Simple text editor
 
 # Font settings
+# Configure the font used in i3, specifying the font family and size.
 font pango:Source Code Pro Medium 9
 
 # Workspace and Window Layout
+# Make workspaces use the tabbed layout by default
 workspace_layout tabbed
+
+# Enable switching back to the previous workspace by pressing the workspace key again.
 workspace_auto_back_and_forth yes
+
+# Hide borders when windows are maximized or there are no gaps between windows.
 hide_edge_borders smart_no_gaps
 
 # Window Icon Configuration
+# Add padding for window titles that display icons.
 for_window [all] title_window_icon padding 3px
 
 # Client Colors (Focused, Unfocused, etc.)
-client.focused          #1a73e8   #1e3a8a  #ffffff  #3b82f6  #1e3a8a
-client.focused_inactive #4b5563   #374151  #d1d5db  #6b7280  #374151
-client.unfocused        #4b5563   #1f2937  #9ca3af  #3f4552  #1f2937
-client.urgent           #dc2626   #991b1b  #ffffff  #f87171  #991b1b
-client.placeholder      #111827   #1f2937  #d1d5db  #111827  #1f2937
-client.background       #e5e7eb
+# Define colors for different window states.
+# Format: client.state <border> <background> <text> <indicator> <child_border>
+
+client.focused          #1a73e8   #1e3a8a  #ffffff  #3b82f6  #1e3a8a   # Active window (focused)
+client.focused_inactive #4b5563   #374151  #d1d5db  #6b7280  #374151   # Focused but inactive (another workspace)
+client.unfocused        #4b5563   #1f2937  #9ca3af  #3f4552  #1f2937   # Unfocused windows
+client.urgent           #dc2626   #991b1b  #ffffff  #f87171  #991b1b   # Windows marked as urgent
+client.placeholder      #111827   #1f2937  #d1d5db  #111827  #1f2937   # Placeholder window (empty container)
+client.background       #e5e7eb                                        # Background color for windows
 
 # Scratchpad Configuration
-## Move the currently focused window to the scratchpad
+# Scratchpad is a feature to temporarily hide windows and bring them back when needed.
+## Move the currently focused window to the scratchpad (hidden storage area) with mod + Shift + minus
 bindsym $mod+Shift+minus move scratchpad
 
-## Show the first scratchpad window
+## Show the first window in the scratchpad with mod + minus
 bindsym $mod+minus scratchpad show
 
 # i3bar Configuration
+# Configuration for the status bar (i3bar) that shows system information.
 bar {
-    status_command i3status
+    status_command i3status  # Command to run for displaying system info (CPU, memory, etc.)
     colors {
-        background #111111
-        statusline #ffffff
-        focused_workspace #4c7899 #285577 #ffffff
-        active_workspace #333333 #5f676a #ffffff
-        inactive_workspace #222222 #333333 #888888
-        urgent_workspace #900000 #900000 #ffffff
-        binding_mode #2f343a #900000 #ffffff
+        background #111111           # Bar background color
+        statusline #ffffff           # Text color for system info
+        focused_workspace #4c7899 #285577 #ffffff  # Colors for the focused workspace
+        active_workspace #333333 #5f676a #ffffff   # Colors for active (but not focused) workspaces
+        inactive_workspace #222222 #333333 #888888 # Colors for inactive workspaces
+        urgent_workspace #900000 #900000 #ffffff   # Colors for urgent workspaces (e.g., alerts)
+        binding_mode #2f343a #900000 #ffffff       # Colors for binding mode (e.g., resizing mode)
     }
 }
 
 # Include additional configuration files
-include ~/.config/i3/config.d/startup.conf
-include ~/.config/i3/config.d/keybindings.conf
-include ~/.config/i3/config.d/workspaces.conf
+# These lines import additional configuration files to modularize settings.
+include ~/.config/i3/config.d/startup.conf        # Startup settings (e.g., auto-start applications)
+include ~/.config/i3/config.d/keybindings.conf    # Additional keybindings
+include ~/.config/i3/config.d/workspaces.conf     # Workspace-specific configurations

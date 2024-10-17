@@ -17,22 +17,39 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Ask the user if they want to configure Git
+echo -e "${YELLOW}Do you want to configure Git with your username and email? (y/n)${NC}"
+read -r configure_git
+
+if [[ "$configure_git" == "y" || "$configure_git" == "Y" ]]; then
+    echo -e "${YELLOW}Please enter your GitHub username:${NC}"
+    read -r github_username
+    echo -e "${YELLOW}Please enter your GitHub email:${NC}"
+    read -r github_email
+fi
+
 # Step 1: Update the system, install essential tools and git setup
 echo -e "${YELLOW}Step 1: Updating system and installing brightnessctl...${NC}"
-sudo pacman -Syu --noconfirm --needed git base-devel brightnessctl
-if [ $? -ne 0 ]; then
+if ! sudo pacman -Syu --noconfirm --needed git base-devel brightnessctl; then
     echo -e "${RED}Error updating system or installing brightnessctl. Exiting...${NC}"
     exit 1
 fi
-git config --global user.name "Tawsif"
-git config --global user.email "tawsif7492@gmail.com" # Added quotes for email
+
+# Configure Git if the user chose to
+if [[ "$configure_git" == "y" || "$configure_git" == "Y" ]]; then
+    git config --global user.name "$github_username"
+    git config --global user.email "$github_email"
+    echo -e "${GREEN}Git configured for user: $github_username.${NC}"
+else
+    echo -e "${YELLOW}Skipping Git configuration as per user choice.${NC}"
+fi
+
 echo -e "${GREEN}System updated and brightnessctl installed.${NC}"
 
 # Step 2: Set screen brightness to 3%
 echo -e "${YELLOW}Step 2: Setting screen brightness to 3%...${NC}"
-sudo brightnessctl set 3%
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Error setting screen brightness. Exiting...${NC}" # Added error check
+if ! sudo brightnessctl set 3%; then
+    echo -e "${RED}Error setting screen brightness. Exiting...${NC}"
     exit 1
 fi
 echo -e "${GREEN}Screen brightness set to 3%.${NC}"
@@ -44,21 +61,25 @@ if command_exists yay; then
 else
     echo -e "${YELLOW}Cloning yay AUR helper...${NC}"
     git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
-    echo -e "${YELLOW}Building and installing yay AUR helper...${NC}"
-    cd /tmp/yay-bin || exit # Added exit on failure to change directory
-    makepkg -si --noconfirm
     if [ $? -ne 0 ]; then
+        echo -e "${RED}Error cloning yay repository. Exiting...${NC}"
+        exit 1
+    fi
+    
+    echo -e "${YELLOW}Building and installing yay AUR helper...${NC}"
+    cd /tmp/yay-bin || { echo -e "${RED}Failed to change directory. Exiting...${NC}"; exit 1; }
+    if ! makepkg -si --noconfirm; then
         echo -e "${RED}Error installing yay. Exiting...${NC}"
         exit 1
     fi
-    cd - || exit # Added exit on failure to return to the previous directory
+    cd - || { echo -e "${RED}Failed to return to the previous directory. Exiting...${NC}"; exit 1; }
     sudo rm -rf /tmp/yay-bin
     echo -e "${GREEN}yay AUR helper installed.${NC}"
 fi
+
 # Step 4: Install essential packages
 echo -e "${YELLOW}Step 4: Installing essential packages...${NC}"
-sudo pacman -S --noconfirm noto-fonts-emoji bash-completion zip unzip neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance man-db thunar thunar-volman thunar-archive-plugin xarchiver gvfs gvfs-mtp hsetroot flameshot dunst rofi gnome-themes-standard papirus-icon-theme
-if [ $? -ne 0 ]; then
+if ! sudo pacman -S --noconfirm noto-fonts-emoji bash-completion zip unzip neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance man-db thunar thunar-volman thunar-archive-plugin xarchiver gvfs gvfs-mtp hsetroot flameshot dunst rofi gnome-themes-standard papirus-icon-theme; then
     echo -e "${RED}Error installing essential packages. Exiting...${NC}"
     exit 1
 fi
@@ -66,11 +87,11 @@ echo -e "${GREEN}Essential packages installed.${NC}"
 
 # Step 5: Enable and start the Bluetooth service
 echo -e "${YELLOW}Step 5: Enabling and starting Bluetooth service...${NC}"
-sudo systemctl enable --now bluetooth
-if [ $? -ne 0 ]; then
+if ! sudo systemctl enable --now bluetooth; then
     echo -e "${RED}Error enabling or starting Bluetooth service. Exiting...${NC}"
     exit 1
 fi
+
 echo -e "${GREEN}Bluetooth service enabled and started.${NC}"
 
 # Step 6: Create necessary directories in the home directory

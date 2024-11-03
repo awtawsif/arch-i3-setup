@@ -8,7 +8,7 @@ exec_always --no-startup-id ~/.config/scripts/set_random_wallpaper.sh
 
 # Applications
 set $terminal xfce4-terminal
-set $launcher "rofi -modi drun,run -show drun"
+set $launcher "rofi -show drun"
 set $filemanager thunar
 set $browser brave
 set $codeeditor code

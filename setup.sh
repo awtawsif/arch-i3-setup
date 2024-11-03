@@ -102,6 +102,7 @@ echo -e "${GREEN}Directories created.${NC}"
 # Step 7: Copy configuration files
 echo -e "${YELLOW}Step 7: Copying configuration files...${NC}"
 sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/
+cp -r rofi ~/.config
 cp .i3status.conf ~/.i3status.conf
 cp -r config.d ~/.config/i3
 cp config ~/.config/i3/config

@@ -65,7 +65,7 @@ else
         echo -e "${RED}Error cloning yay repository. Exiting...${NC}"
         exit 1
     fi
-    
+
     echo -e "${YELLOW}Building and installing yay AUR helper...${NC}"
     cd /tmp/yay-bin || { echo -e "${RED}Failed to change directory. Exiting...${NC}"; exit 1; }
     if ! makepkg -si --noconfirm; then
@@ -79,7 +79,7 @@ fi
 
 # Step 4: Install essential packages
 echo -e "${YELLOW}Step 4: Installing essential packages...${NC}"
-if ! sudo pacman -S --noconfirm mousepad noto-fonts-emoji bash-completion zip unzip neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance man-db thunar thunar-volman thunar-archive-plugin xarchiver gvfs gvfs-mtp hsetroot flameshot dunst rofi gnome-themes-standard papirus-icon-theme; then
+if ! sudo pacman -S --noconfirm nano-syntax-highlighting mousepad noto-fonts-emoji bash-completion zip unzip neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance man-db thunar thunar-volman thunar-archive-plugin xarchiver gvfs gvfs-mtp hsetroot flameshot dunst rofi gnome-themes-standard papirus-icon-theme; then
     echo -e "${RED}Error installing essential packages. Exiting...${NC}"
     exit 1
 fi

@@ -79,7 +79,11 @@ fi
 
 # Step 4: Install essential packages
 echo -e "${YELLOW}Step 4: Installing essential packages...${NC}"
-if ! sudo pacman -S --noconfirm nano-syntax-highlighting mousepad noto-fonts-emoji bash-completion zip unzip neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance man-db thunar thunar-volman thunar-archive-plugin xarchiver gvfs gvfs-mtp hsetroot flameshot dunst rofi gnome-themes-standard papirus-icon-theme; then
+if ! yay -S --noconfirm bumblebee-status python-pulsectl; then
+    echo -e "${RED}Error installing essential packages. Exiting...${NC}"
+    exit 1
+fi
+if ! sudo pacman -S nano-syntax-highlighting python-i3ipc mousepad noto-fonts-emoji bash-completion zip unzip neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance man-db thunar thunar-volman thunar-archive-plugin xarchiver gvfs gvfs-mtp hsetroot flameshot dunst rofi gnome-themes-standard papirus-icon-theme; then
     echo -e "${RED}Error installing essential packages. Exiting...${NC}"
     exit 1
 fi
@@ -103,7 +107,7 @@ echo -e "${GREEN}Directories created.${NC}"
 echo -e "${YELLOW}Step 7: Copying configuration files...${NC}"
 sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/
 cp -r rofi ~/.config
-cp .i3status.conf ~/.i3status.conf
+cp .bumblebee-status.conf ~/.bumblebee-status.conf
 cp -r config.d ~/.config/i3
 cp config ~/.config/i3/config
 cp .bashrc ~/.bashrc

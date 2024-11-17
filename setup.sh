@@ -229,8 +229,8 @@ main() {
             flameshot \
             dunst \
             rofi \
-            powerline \
-            powerline-fonts \
+            i3status-rust \
+            ttf-font-awesome \
             gnome-themes-standard \
             papirus-icon-theme
     } &
@@ -248,10 +248,6 @@ main() {
         (cd /tmp/yay-bin && makepkg -si --noconfirm) || handle_error "Failed to install yay"
         rm -rf /tmp/yay-bin
     fi
-    
-    # Install AUR packages
-    install_aur_package "bumblebee-status" || handle_error "Failed to install bumblebee-status"
-    install_aur_package "python-pulsectl" || handle_error "Failed to install python-pulsectl"
     
     # Enable services
     echo -e "${YELLOW}Enabling system services...${NC}"

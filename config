@@ -42,7 +42,8 @@ bindsym $mod+minus scratchpad show
 
 # i3bar Configuration
 bar {
-    status_command bumblebee-status
+	font pango:SourceCodeVF 9
+	status_command /usr/bin/i3status-rs /home/tawsif/.config/i3rs-config.toml
 }
 
 # Include additional configuration files

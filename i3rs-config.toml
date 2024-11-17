@@ -1,0 +1,71 @@
+icons_format = "{icon}"
+
+[theme]
+theme = "dracula"
+[theme.overrides]
+idle_bg = "#111111"
+
+[icons]
+icons = "awesome6"
+
+[[block]]
+block = "cpu"
+interval = 1
+format = " $barchart $utilization "
+warning_cpu = 50
+critical_cpu = 90
+
+[[block]]
+block = "battery"
+driver = "upower"
+good = 75
+info = 0
+
+[[block]]
+block = "net"
+format = " $icon $ssid $signal_strength "
+
+[[block]]
+block = "disk_space"
+info_type = "available"
+alert_unit = "GB"
+alert = 10.0
+warning = 15.0
+format = " $icon $available.eng(w:5, prefix_space:true, p:Gi) "
+format_alt = " $icon $available.eng(w:5) / $total.eng(w:5) "
+[[block.click]]
+button = "right"
+update = true
+
+[[block]]
+block = "memory"
+format = " $icon $mem_used.eng(w:4, prefix_space:true, p:Mi) "
+warning_mem = 70
+critical_mem = 90
+
+[[block]]
+block = "sound"
+driver = "pulseaudio"
+show_volume_when_muted = true
+format = " $icon $volume "
+step_width = 3
+
+[[block]]
+block = "time"
+interval = 5
+format = " $timestamp.datetime(f:'%a %d/%m %R') "
+
+[[block]]
+block = "menu"
+text = "\uf011  "
+[[block.items]]
+display = " -&gt;   Sleep   &lt;-"
+cmd = "systemctl suspend"
+[[block.items]]
+display = " -&gt; Power Off &lt;-"
+cmd = "poweroff"
+confirm_msg = "Are you sure you want to power off?"
+[[block.items]]
+display = " -&gt;  Reboot   &lt;-"
+cmd = "reboot"
+confirm_msg = "Are you sure you want to reboot?"

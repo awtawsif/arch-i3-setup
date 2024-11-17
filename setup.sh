@@ -5,16 +5,93 @@ GREEN="\033[0;32m"
 RED="\033[0;31m"
 YELLOW="\033[0;33m"
 BLUE="\033[0;34m"
+CYAN="\033[0;36m"
 NC="\033[0m" # No Color
 
-# Log the installation process to a file
-LOGFILE=~/setup.log
+# Backup directory
+BACKUP_DIR=~/config_backups/$(date +%Y%m%d_%H%M%S)
+
+# Log the installation process to a file with timestamp
+LOGFILE=~/setup_$(date +%Y%m%d_%H%M%S).log
+mkdir -p "$(dirname "$LOGFILE")"
 exec > >(tee -a "$LOGFILE") 2>&1
+
+# Print banner
+echo -e "${CYAN}"
+echo "╔═══════════════════════════════════════════╗"
+echo "║         System Setup Installation         ║"
+echo "╚═══════════════════════════════════════════╝"
+echo -e "${NC}"
 echo -e "${BLUE}Logging the installation process to $LOGFILE${NC}"
+
+# Function to check if script is run as root
+check_not_root() {
+    if [ "$(id -u)" = "0" ]; then
+        echo -e "${RED}This script should not be run as root${NC}"
+        exit 1
+    fi
+}
 
 # Function to check if a command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
+}
+
+# Function to backup existing configurations
+backup_configs() {
+    echo -e "${YELLOW}Creating backup of existing configurations...${NC}"
+    mkdir -p "$BACKUP_DIR"
+    
+    # List of files/directories to backup
+    local configs=(
+        ~/.config/i3
+        ~/.config/rofi
+        ~/.bumblebee-status.conf
+        ~/.bashrc
+        ~/.config/nano/nanorc
+    )
+    
+    for config in "${configs[@]}"; do
+        if [ -e "$config" ]; then
+            cp -r "$config" "$BACKUP_DIR/" 2>/dev/null || {
+                echo -e "${RED}Failed to backup ${config}${NC}"
+                return 1
+            }
+        fi
+    done
+    
+    echo -e "${GREEN}Backup created at: $BACKUP_DIR${NC}"
+    return 0
+}
+
+# Function to check internet connectivity
+check_internet() {
+    echo -e "${YELLOW}Checking internet connection...${NC}"
+    if ! ping -c 1 8.8.8.8 >/dev/null 2>&1; then
+        echo -e "${RED}No internet connection. Please connect to the internet and try again.${NC}"
+        exit 1
+    fi
+    echo -e "${GREEN}Internet connection verified.${NC}"
+}
+
+# Function to check system requirements
+check_system() {
+    echo -e "${YELLOW}Checking system requirements...${NC}"
+    
+    # Check if running on Arch Linux
+    if [ ! -f /etc/arch-release ]; then
+        echo -e "${RED}This script is designed for Arch Linux${NC}"
+        exit 1
+    }
+    
+    # Check for minimum disk space (10GB free)
+    local free_space=$(df -BG / | awk 'NR==2 {print $4}' | sed 's/G//')
+    if [ "$free_space" -lt 10 ]; then
+        echo -e "${RED}Not enough disk space. At least 10GB required.${NC}"
+        exit 1
+    }
+    
+    echo -e "${GREEN}System requirements met.${NC}"
 }
 
 # Function to check if files exist before copying
@@ -34,186 +111,196 @@ check_files() {
     return 0
 }
 
-# First verify all required files exist
-echo -e "${YELLOW}Checking for required configuration files...${NC}"
-if ! check_files \
-    "40-libinput.conf" \
-    "rofi" \
-    ".bumblebee-status.conf" \
-    "config.d" \
-    "config" \
-    ".bashrc" \
-    "Wallpapers" \
-    "scripts" \
-    "nanorc"; then
-    echo -e "${RED}Missing required files. Please ensure all configuration files are present before running the script.${NC}"
-    exit 1
-fi
+# Function to handle errors
+handle_error() {
+    local exit_code=$?
+    local error_msg="$1"
+    if [ $exit_code -ne 0 ]; then
+        echo -e "${RED}Error: $error_msg (Exit code: $exit_code)${NC}"
+        echo -e "${YELLOW}Check the log file for more details: $LOGFILE${NC}"
+        exit $exit_code
+    fi
+}
 
-# Ask the user if they want to configure Git
-echo -e "${YELLOW}Do you want to configure Git with your username and email? (y/n)${NC}"
-read -r configure_git
+# Function for progress animation
+show_progress() {
+    local pid=$1
+    local delay=0.1
+    local spinstr='|/-\'
+    while ps -p $pid > /dev/null; do
+        local temp=${spinstr#?}
+        printf " [%c] " "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\b\b\b\b\b"
+    done
+    printf "    \b\b\b\b"
+}
 
-if [[ "$configure_git" == "y" || "$configure_git" == "Y" ]]; then
-    echo -e "${YELLOW}Please enter your GitHub username:${NC}"
-    read -r github_username
-    echo -e "${YELLOW}Please enter your GitHub email:${NC}"
-    read -r github_email
-fi
-
-# Step 1: Update the system, install essential tools and git setup
-echo -e "${YELLOW}Step 1: Updating system and installing brightnessctl...${NC}"
-if ! sudo pacman -Syu --noconfirm --needed git base-devel brightnessctl; then
-    echo -e "${RED}Error updating system or installing brightnessctl. Exiting...${NC}"
-    exit 1
-fi
-
-# Configure Git if the user chose to
-if [[ "$configure_git" == "y" || "$configure_git" == "Y" ]]; then
-    git config --global user.name "$github_username"
-    git config --global user.email "$github_email"
-    echo -e "${GREEN}Git configured for user: $github_username${NC}"
-else
-    echo -e "${YELLOW}Skipping Git configuration as per user choice.${NC}"
-fi
-
-echo -e "${GREEN}System updated and brightnessctl installed.${NC}"
-
-# Step 2: Set screen brightness to 3%
-echo -e "${YELLOW}Step 2: Setting screen brightness to 3%...${NC}"
-if ! sudo brightnessctl set 3%; then
-    echo -e "${RED}Error setting screen brightness. Exiting...${NC}"
-    exit 1
-fi
-echo -e "${GREEN}Screen brightness set to 3%.${NC}"
-
-# Step 3: Install yay AUR helper if it's not already installed
-echo -e "${YELLOW}Step 3: Installing yay AUR helper...${NC}"
-if command_exists yay; then
-    echo -e "${GREEN}yay is already installed, skipping installation.${NC}"
-else
-    echo -e "${YELLOW}Cloning yay AUR helper...${NC}"
-    git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin || {
-        echo -e "${RED}Error cloning yay repository. Exiting...${NC}"
-        exit 1
-    }
-
-    echo -e "${YELLOW}Building and installing yay AUR helper...${NC}"
-    cd /tmp/yay-bin || {
-        echo -e "${RED}Failed to change directory. Exiting...${NC}"
-        exit 1
-    }
-    
-    if ! makepkg -si --noconfirm; then
-        echo -e "${RED}Error installing yay. Exiting...${NC}"
-        cd - || echo -e "${RED}Failed to return to previous directory${NC}"
-        exit 1
+# Function to install AUR packages with error handling
+install_aur_package() {
+    local package=$1
+    if ! command_exists yay; then
+        echo -e "${RED}yay is not installed. Cannot install AUR package.${NC}"
+        return 1
     fi
     
-    cd - || {
-        echo -e "${RED}Failed to return to previous directory. Exiting...${NC}"
-        exit 1
-    }
-    
-    sudo rm -rf /tmp/yay-bin
-    echo -e "${GREEN}yay AUR helper installed.${NC}"
-fi
-
-# Step 4: Install essential packages
-echo -e "${YELLOW}Step 4: Installing essential packages...${NC}"
-if ! yay -S --noconfirm bumblebee-status python-pulsectl; then
-    echo -e "${RED}Error installing AUR packages. Exiting...${NC}"
-    exit 1
-fi
-
-if ! sudo pacman -S --noconfirm --needed \
-    nano-syntax-highlighting \
-    python-i3ipc \
-    mousepad \
-    noto-fonts-emoji \
-    bash-completion \
-    zip \
-    unzip \
-    neofetch \
-    curl \
-    wget \
-    xss-lock \
-    bluez \
-    bluez-utils \
-    blueman \
-    lxappearance \
-    man-db \
-    thunar \
-    thunar-volman \
-    thunar-archive-plugin \
-    xarchiver \
-    gvfs \
-    gvfs-mtp \
-    hsetroot \
-    flameshot \
-    dunst \
-    rofi \
-    gnome-themes-standard \
-    papirus-icon-theme; then
-    echo -e "${RED}Error installing essential packages. Exiting...${NC}"
-    exit 1
-fi
-echo -e "${GREEN}Essential packages installed.${NC}"
-
-# Step 5: Enable and start the Bluetooth service
-echo -e "${YELLOW}Step 5: Enabling and starting Bluetooth service...${NC}"
-if ! sudo systemctl enable --now bluetooth; then
-    echo -e "${RED}Error enabling or starting Bluetooth service. Exiting...${NC}"
-    exit 1
-fi
-echo -e "${GREEN}Bluetooth service enabled and started.${NC}"
-
-# Step 6: Create necessary directories
-echo -e "${YELLOW}Step 6: Creating necessary directories...${NC}"
-mkdir -p ~/Documents ~/Downloads ~/Pictures ~/Music ~/Videos ~/Projects ~/.config/i3 ~/.config/nano
-echo -e "${GREEN}Directories created.${NC}"
-
-# Step 7: Copy configuration files
-echo -e "${YELLOW}Step 7: Copying configuration files...${NC}"
-if ! sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/; then
-    echo -e "${RED}Error copying 40-libinput.conf${NC}"
-    exit 1
-fi
-
-# Using cp -r for directories and protecting against errors
-cp_with_error_check() {
-    if ! cp -r "$1" "$2"; then
-        echo -e "${RED}Error copying $1 to $2${NC}"
+    echo -e "${YELLOW}Installing $package from AUR...${NC}"
+    if ! yay -S --noconfirm "$package"; then
+        echo -e "${RED}Failed to install $package${NC}"
         return 1
     fi
     return 0
 }
 
-# Copy all configuration files with error checking
-cp_with_error_check "rofi" ~/.config || exit 1
-cp_with_error_check ".bumblebee-status.conf" ~/ || exit 1
-cp_with_error_check "config.d" ~/.config/i3/ || exit 1
-cp_with_error_check "config" ~/.config/i3/ || exit 1
-cp_with_error_check ".bashrc" ~/ || exit 1
-cp_with_error_check "Wallpapers" ~/Pictures/ || exit 1
-cp_with_error_check "scripts" ~/.config/ || exit 1
-cp_with_error_check "nanorc" ~/.config/nano/ || exit 1
+# Main installation function
+main() {
+    # Initial checks
+    check_not_root
+    check_internet
+    check_system
+    
+    # Create timestamp for this installation
+    local TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+    echo -e "${BLUE}Installation started at: $(date)${NC}"
+    
+    # Backup existing configurations
+    backup_configs || {
+        echo -e "${RED}Failed to create backup. Exiting...${NC}"
+        exit 1
+    }
+    
+    # Verify required files
+    echo -e "${YELLOW}Checking for required configuration files...${NC}"
+    if ! check_files \
+        "40-libinput.conf" \
+        "rofi" \
+        ".bumblebee-status.conf" \
+        "config.d" \
+        "config" \
+        ".bashrc" \
+        "Wallpapers" \
+        "scripts" \
+        "nanorc"; then
+        echo -e "${RED}Missing required files. Please ensure all configuration files are present.${NC}"
+        exit 1
+    fi
+    
+    # Git configuration
+    echo -e "${YELLOW}Do you want to configure Git with your username and email? (y/n)${NC}"
+    read -r configure_git
+    
+    if [[ "$configure_git" == "y" || "$configure_git" == "Y" ]]; then
+        echo -e "${YELLOW}Please enter your GitHub username:${NC}"
+        read -r github_username
+        echo -e "${YELLOW}Please enter your GitHub email:${NC}"
+        read -r github_email
+        
+        git config --global user.name "$github_username"
+        git config --global user.email "$github_email"
+        echo -e "${GREEN}Git configured for user: $github_username${NC}"
+    else
+        echo -e "${YELLOW}Skipping Git configuration as per user choice.${NC}"
+    fi
+    
+    # System update and package installation
+    echo -e "${YELLOW}Updating system and installing packages...${NC}"
+    {
+        sudo pacman -Syu --noconfirm --needed \
+            git \
+            base-devel \
+            brightnessctl \
+            nano-syntax-highlighting \
+            python-i3ipc \
+            mousepad \
+            noto-fonts-emoji \
+            bash-completion \
+            zip \
+            unzip \
+            neofetch \
+            curl \
+            wget \
+            xss-lock \
+            bluez \
+            bluez-utils \
+            blueman \
+            lxappearance \
+            man-db \
+            thunar \
+            thunar-volman \
+            thunar-archive-plugin \
+            xarchiver \
+            gvfs \
+            gvfs-mtp \
+            hsetroot \
+            flameshot \
+            dunst \
+            rofi \
+            gnome-themes-standard \
+            papirus-icon-theme
+    } &
+    show_progress $!
+    handle_error "Failed to install packages"
+    
+    # Set screen brightness
+    echo -e "${YELLOW}Setting screen brightness to 3%...${NC}"
+    sudo brightnessctl set 3% || handle_error "Failed to set brightness"
+    
+    # Install yay if not present
+    if ! command_exists yay; then
+        echo -e "${YELLOW}Installing yay AUR helper...${NC}"
+        git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin || handle_error "Failed to clone yay"
+        (cd /tmp/yay-bin && makepkg -si --noconfirm) || handle_error "Failed to install yay"
+        rm -rf /tmp/yay-bin
+    fi
+    
+    # Install AUR packages
+    install_aur_package "bumblebee-status" || handle_error "Failed to install bumblebee-status"
+    install_aur_package "python-pulsectl" || handle_error "Failed to install python-pulsectl"
+    
+    # Enable services
+    echo -e "${YELLOW}Enabling system services...${NC}"
+    sudo systemctl enable --now bluetooth || handle_error "Failed to enable bluetooth"
+    
+    # Create directories
+    echo -e "${YELLOW}Creating directory structure...${NC}"
+    mkdir -p \
+        ~/Documents \
+        ~/Downloads \
+        ~/Pictures \
+        ~/Music \
+        ~/Videos \
+        ~/Projects \
+        ~/.config/i3 \
+        ~/.config/nano
+    
+    # Copy configuration files
+    echo -e "${YELLOW}Copying configuration files...${NC}"
+    sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/ || handle_error "Failed to copy 40-libinput.conf"
+    cp -r rofi ~/.config/ || handle_error "Failed to copy rofi config"
+    cp .bumblebee-status.conf ~/ || handle_error "Failed to copy bumblebee-status config"
+    cp -r config.d ~/.config/i3/ || handle_error "Failed to copy i3 config.d"
+    cp config ~/.config/i3/ || handle_error "Failed to copy i3 config"
+    cp .bashrc ~/ || handle_error "Failed to copy bashrc"
+    cp -r Wallpapers ~/Pictures/ || handle_error "Failed to copy wallpapers"
+    cp -r scripts ~/.config/ || handle_error "Failed to copy scripts"
+    cp nanorc ~/.config/nano/ || handle_error "Failed to copy nano config"
+    
+    # Set permissions
+    chmod +x ~/.config/scripts/set_random_wallpaper.sh || handle_error "Failed to set script permissions"
+    
+    # Clean up
+    echo -e "${YELLOW}Cleaning up...${NC}"
+    sudo pacman -Sc --noconfirm || handle_error "Failed to clean package cache"
+    
+    # Installation complete
+    echo -e "${GREEN}╔═══════════════════════════════════════════╗${NC}"
+    echo -e "${GREEN}║         Installation Complete!            ║${NC}"
+    echo -e "${GREEN}╚═══════════════════════════════════════════╝${NC}"
+    echo -e "${YELLOW}Installation log: $LOGFILE${NC}"
+    echo -e "${YELLOW}Backup directory: $BACKUP_DIR${NC}"
+    echo -e "${CYAN}Please reboot your system to apply all changes.${NC}"
+}
 
-# Make the wallpaper script executable
-if ! chmod +x ~/.config/scripts/set_random_wallpaper.sh; then
-    echo -e "${RED}Error making wallpaper script executable${NC}"
-    exit 1
-fi
-
-echo -e "${GREEN}Configuration files copied.${NC}"
-
-# Step 8: Clean up package cache
-echo -e "${YELLOW}Step 8: Cleaning up package cache...${NC}"
-if ! sudo pacman -Sc --noconfirm; then
-    echo -e "${RED}Error cleaning package cache${NC}"
-    exit 1
-fi
-echo -e "${GREEN}Package cache cleaned.${NC}"
-
-# Step 9: Post-installation message
-echo -e "${GREEN}Setup completed successfully! Remember to reboot your system.${NC}"
+# Run main function
+main "$@"

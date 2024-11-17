@@ -17,6 +17,39 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Function to check if files exist before copying
+check_files() {
+    local missing_files=()
+    for file in "$@"; do
+        if [ ! -e "$file" ]; then
+            missing_files+=("$file")
+        fi
+    done
+    
+    if [ ${#missing_files[@]} -ne 0 ]; then
+        echo -e "${RED}Error: The following required files are missing:${NC}"
+        printf '%s\n' "${missing_files[@]}"
+        return 1
+    fi
+    return 0
+}
+
+# First verify all required files exist
+echo -e "${YELLOW}Checking for required configuration files...${NC}"
+if ! check_files \
+    "40-libinput.conf" \
+    "rofi" \
+    ".bumblebee-status.conf" \
+    "config.d" \
+    "config" \
+    ".bashrc" \
+    "Wallpapers" \
+    "scripts" \
+    "nanorc"; then
+    echo -e "${RED}Missing required files. Please ensure all configuration files are present before running the script.${NC}"
+    exit 1
+fi
+
 # Ask the user if they want to configure Git
 echo -e "${YELLOW}Do you want to configure Git with your username and email? (y/n)${NC}"
 read -r configure_git
@@ -39,7 +72,7 @@ fi
 if [[ "$configure_git" == "y" || "$configure_git" == "Y" ]]; then
     git config --global user.name "$github_username"
     git config --global user.email "$github_email"
-    echo -e "${GREEN}Git configured for user: $github_username.${NC}"
+    echo -e "${GREEN}Git configured for user: $github_username${NC}"
 else
     echo -e "${YELLOW}Skipping Git configuration as per user choice.${NC}"
 fi
@@ -60,19 +93,28 @@ if command_exists yay; then
     echo -e "${GREEN}yay is already installed, skipping installation.${NC}"
 else
     echo -e "${YELLOW}Cloning yay AUR helper...${NC}"
-    git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
-    if [ $? -ne 0 ]; then
+    git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin || {
         echo -e "${RED}Error cloning yay repository. Exiting...${NC}"
         exit 1
-    fi
+    }
 
     echo -e "${YELLOW}Building and installing yay AUR helper...${NC}"
-    cd /tmp/yay-bin || { echo -e "${RED}Failed to change directory. Exiting...${NC}"; exit 1; }
+    cd /tmp/yay-bin || {
+        echo -e "${RED}Failed to change directory. Exiting...${NC}"
+        exit 1
+    }
+    
     if ! makepkg -si --noconfirm; then
         echo -e "${RED}Error installing yay. Exiting...${NC}"
+        cd - || echo -e "${RED}Failed to return to previous directory${NC}"
         exit 1
     fi
-    cd - || { echo -e "${RED}Failed to return to the previous directory. Exiting...${NC}"; exit 1; }
+    
+    cd - || {
+        echo -e "${RED}Failed to return to previous directory. Exiting...${NC}"
+        exit 1
+    }
+    
     sudo rm -rf /tmp/yay-bin
     echo -e "${GREEN}yay AUR helper installed.${NC}"
 fi
@@ -80,10 +122,39 @@ fi
 # Step 4: Install essential packages
 echo -e "${YELLOW}Step 4: Installing essential packages...${NC}"
 if ! yay -S --noconfirm bumblebee-status python-pulsectl; then
-    echo -e "${RED}Error installing essential packages. Exiting...${NC}"
+    echo -e "${RED}Error installing AUR packages. Exiting...${NC}"
     exit 1
 fi
-if ! sudo pacman -S nano-syntax-highlighting python-i3ipc mousepad noto-fonts-emoji bash-completion zip unzip neofetch curl wget xss-lock bluez bluez-utils blueman lxappearance man-db thunar thunar-volman thunar-archive-plugin xarchiver gvfs gvfs-mtp hsetroot flameshot dunst rofi gnome-themes-standard papirus-icon-theme; then
+
+if ! sudo pacman -S --noconfirm --needed \
+    nano-syntax-highlighting \
+    python-i3ipc \
+    mousepad \
+    noto-fonts-emoji \
+    bash-completion \
+    zip \
+    unzip \
+    neofetch \
+    curl \
+    wget \
+    xss-lock \
+    bluez \
+    bluez-utils \
+    blueman \
+    lxappearance \
+    man-db \
+    thunar \
+    thunar-volman \
+    thunar-archive-plugin \
+    xarchiver \
+    gvfs \
+    gvfs-mtp \
+    hsetroot \
+    flameshot \
+    dunst \
+    rofi \
+    gnome-themes-standard \
+    papirus-icon-theme; then
     echo -e "${RED}Error installing essential packages. Exiting...${NC}"
     exit 1
 fi
@@ -95,32 +166,53 @@ if ! sudo systemctl enable --now bluetooth; then
     echo -e "${RED}Error enabling or starting Bluetooth service. Exiting...${NC}"
     exit 1
 fi
-
 echo -e "${GREEN}Bluetooth service enabled and started.${NC}"
 
-# Step 6: Create necessary directories in the home directory
-echo -e "${YELLOW}Step 6: Creating necessary directories in the home directory...${NC}"
-mkdir -p ~/Documents ~/Downloads ~/Pictures ~/Music ~/Videos ~/Projects
+# Step 6: Create necessary directories
+echo -e "${YELLOW}Step 6: Creating necessary directories...${NC}"
+mkdir -p ~/Documents ~/Downloads ~/Pictures ~/Music ~/Videos ~/Projects ~/.config/i3 ~/.config/nano
 echo -e "${GREEN}Directories created.${NC}"
 
 # Step 7: Copy configuration files
 echo -e "${YELLOW}Step 7: Copying configuration files...${NC}"
-sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/
-cp -r rofi ~/.config
-cp .bumblebee-status.conf ~/.bumblebee-status.conf
-cp -r config.d ~/.config/i3
-cp config ~/.config/i3/config
-cp .bashrc ~/.bashrc
-cp -r Wallpapers ~/Pictures
-cp -r scripts ~/.config
-mkdir ~/.config/nano
-cp -r nanorc ~/.config/nano/nanorc
-chmod +x ~/.config/scripts/set_random_wallpaper.sh
+if ! sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/; then
+    echo -e "${RED}Error copying 40-libinput.conf${NC}"
+    exit 1
+fi
+
+# Using cp -r for directories and protecting against errors
+cp_with_error_check() {
+    if ! cp -r "$1" "$2"; then
+        echo -e "${RED}Error copying $1 to $2${NC}"
+        return 1
+    fi
+    return 0
+}
+
+# Copy all configuration files with error checking
+cp_with_error_check "rofi" ~/.config || exit 1
+cp_with_error_check ".bumblebee-status.conf" ~/ || exit 1
+cp_with_error_check "config.d" ~/.config/i3/ || exit 1
+cp_with_error_check "config" ~/.config/i3/ || exit 1
+cp_with_error_check ".bashrc" ~/ || exit 1
+cp_with_error_check "Wallpapers" ~/Pictures/ || exit 1
+cp_with_error_check "scripts" ~/.config/ || exit 1
+cp_with_error_check "nanorc" ~/.config/nano/ || exit 1
+
+# Make the wallpaper script executable
+if ! chmod +x ~/.config/scripts/set_random_wallpaper.sh; then
+    echo -e "${RED}Error making wallpaper script executable${NC}"
+    exit 1
+fi
+
 echo -e "${GREEN}Configuration files copied.${NC}"
 
 # Step 8: Clean up package cache
 echo -e "${YELLOW}Step 8: Cleaning up package cache...${NC}"
-sudo pacman -Sc --noconfirm
+if ! sudo pacman -Sc --noconfirm; then
+    echo -e "${RED}Error cleaning package cache${NC}"
+    exit 1
+fi
 echo -e "${GREEN}Package cache cleaned.${NC}"
 
 # Step 9: Post-installation message

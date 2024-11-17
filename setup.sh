@@ -82,12 +82,7 @@ check_system() {
     if [ ! -f /etc/arch-release ]; then
         echo -e "${RED}This script is designed for Arch Linux${NC}"
         exit 1
-    
-    # Check for minimum disk space (10GB free)
-    local free_space=$(df -BG / | awk 'NR==2 {print $4}' | sed 's/G//')
-    if [ "$free_space" -lt 10 ]; then
-        echo -e "${RED}Not enough disk space. At least 10GB required.${NC}"
-        exit 1
+    fi
     
     echo -e "${GREEN}System requirements met.${NC}"
 }
@@ -234,6 +229,8 @@ main() {
             flameshot \
             dunst \
             rofi \
+            powerline \
+            powerline-fonts \
             gnome-themes-standard \
             papirus-icon-theme
     } &
@@ -290,6 +287,7 @@ main() {
     # Clean up
     echo -e "${YELLOW}Cleaning up...${NC}"
     sudo pacman -Sc --noconfirm || handle_error "Failed to clean package cache"
+    sudo rm -r .bash_profile
     
     # Installation complete
     echo -e "${GREEN}╔═══════════════════════════════════════════╗${NC}"

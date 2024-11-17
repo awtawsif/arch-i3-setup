@@ -42,16 +42,7 @@ bindsym $mod+minus scratchpad show
 
 # i3bar Configuration
 bar {
-    status_command i3status
-    colors {
-        background #111111
-        statusline #ffffff
-        focused_workspace #4c7899 #285577 #ffffff
-        active_workspace #333333 #5f676a #ffffff
-        inactive_workspace #222222 #333333 #888888
-        urgent_workspace #900000 #900000 #ffffff
-        binding_mode #2f343a #900000 #ffffff
-    }
+    status_command bumblebee-status
 }
 
 # Include additional configuration files

@@ -167,7 +167,7 @@ main() {
     if ! check_files \
         "40-libinput.conf" \
         "rofi" \
-        ".i3rs-config.toml" \
+        "i3rs-config.toml" \
         "config.d" \
         "config" \
         ".bashrc" \

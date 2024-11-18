@@ -46,7 +46,6 @@ backup_configs() {
     local configs=(
         ~/.config/i3
         ~/.config/rofi
-        ~/.bumblebee-status.conf
         ~/.bashrc
         ~/.config/nano/nanorc
     )
@@ -168,7 +167,7 @@ main() {
     if ! check_files \
         "40-libinput.conf" \
         "rofi" \
-        ".bumblebee-status.conf" \
+        ".i3rs-config.toml" \
         "config.d" \
         "config" \
         ".bashrc" \
@@ -269,7 +268,7 @@ main() {
     echo -e "${YELLOW}Copying configuration files...${NC}"
     sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/ || handle_error "Failed to copy 40-libinput.conf"
     cp -r rofi ~/.config/ || handle_error "Failed to copy rofi config"
-    cp .bumblebee-status.conf ~/ || handle_error "Failed to copy bumblebee-status config"
+    cp .i3rs-config.toml ~/.config/ || handle_error "Failed to copy i3rs-config config"
     cp -r config.d ~/.config/i3/ || handle_error "Failed to copy i3 config.d"
     cp config ~/.config/i3/ || handle_error "Failed to copy i3 config"
     cp .bashrc ~/ || handle_error "Failed to copy bashrc"

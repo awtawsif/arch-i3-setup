@@ -199,6 +199,7 @@ main() {
     echo -e "${YELLOW}Updating system and installing packages...${NC}"
     {
         sudo pacman -Syu --noconfirm --needed \
+            alacritty \
             git \
             base-devel \
             brightnessctl \

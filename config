@@ -7,7 +7,7 @@ set $mod Mod1
 exec_always --no-startup-id ~/.config/scripts/set_random_wallpaper.sh
 
 # Applications
-set $terminal xfce4-terminal
+set $terminal alacritty
 set $launcher "rofi -show drun"
 set $filemanager thunar
 set $browser brave

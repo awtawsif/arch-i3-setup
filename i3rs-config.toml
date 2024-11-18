@@ -23,7 +23,7 @@ info = 0
 
 [[block]]
 block = "net"
-format = " $icon $ssid $signal_strength "
+format = " $icon {$ssid $signal_strength|Wired Connection} "
 
 [[block]]
 block = "disk_space"

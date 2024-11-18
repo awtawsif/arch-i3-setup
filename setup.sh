@@ -283,7 +283,7 @@ main() {
     # Clean up
     echo -e "${YELLOW}Cleaning up...${NC}"
     sudo pacman -Sc --noconfirm || handle_error "Failed to clean package cache"
-    sudo rm -r .bash_profile
+    sudo rm -r ~/.bash_profile
     
     # Installation complete
     echo -e "${GREEN}╔═══════════════════════════════════════════╗${NC}"

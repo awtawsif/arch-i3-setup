@@ -206,7 +206,6 @@ main() {
             nano-syntax-highlighting \
             python-i3ipc \
             mousepad \
-            noto-fonts-emoji \
             bash-completion \
             zip \
             unzip \
@@ -230,7 +229,7 @@ main() {
             dunst \
             rofi \
             i3status-rust \
-            ttf-font-awesome \
+            ttf-jetbrains-mono-nerd \
             gnome-themes-standard \
             papirus-icon-theme
     } &

@@ -15,7 +15,7 @@ set $codeeditor code
 set $texteditor mousepad
 
 # Font settings
-font pango:Source Code Pro Medium 9
+font pango: JetBrainsMono Nerd Font Propo 9
 
 # Workspace and Window Layout
 workspace_layout tabbed
@@ -42,7 +42,7 @@ bindsym $mod+minus scratchpad show
 
 # i3bar Configuration
 bar {
-	font pango:SourceCodeVF 9
+	font pango: JetBrainsMono Nerd Font Propo 9
 	status_command /usr/bin/i3status-rs /home/tawsif/.config/i3rs-config.toml
 }
 

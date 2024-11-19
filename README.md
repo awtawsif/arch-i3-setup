@@ -1,117 +1,242 @@
-# System Setup Script
+# Arch Linux i3 Setup Script
 
-This bash script automates the setup and configuration of an Arch Linux system, installing essential packages and configuring system settings, including customizing user profiles, setting up necessary directories, and applying configurations.
+A comprehensive setup script for Arch Linux with i3 window manager, including dotfiles management and system configuration. This script automates the process of setting up a new Arch Linux installation with i3 window manager and various quality-of-life improvements.
 
 ## Table of Contents
 
-- [Requirements](#requirements)
-- [Installation](#installation)
+- [Prerequisites](#prerequisites)
+- [Directory Structure](#directory-structure)
 - [Features](#features)
+- [Installation](#installation)
 - [Usage](#usage)
-- [Configuration Details](#configuration-details)
+- [Packages](#packages)
+- [Configuration](#configuration)
+- [Customization](#customization)
 - [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
 - [License](#license)
 
-## Requirements
+## Prerequisites
 
-- Arch Linux with i3 window manager.
-- An internet connection to install packages and clone repositories.
-- `sudo` access for administrative operations.
+- A fresh Arch Linux installation
+- Internet connection
+- Base system packages (`base` `base-devel`)
+- A non-root user with sudo privileges
+- X.org server installed (`xorg` `xorg-xinit`)
 
-## Installation
+## Directory Structure
 
-1. Clone the repository to your local machine:
-    ```bash
-    git clone https://github.com/abrar-wadud/i3-wm.git
-    cd i3-wm
-    ```
-
-2. Make the setup script executable:
-    ```bash
-    chmod +x setup.sh
-    ```
-
-3. Run the script:
-    ```bash
-    ./setup.sh
-    ```
+```
+Projects/i3-wm/
+├── setup.sh                 # Main installation script
+├── 40-libinput.conf        # X11 input configuration
+├── README.md               # This file
+└── dotfiles/
+    ├── .bashrc            # Bash configuration
+    ├── .config/
+    │   ├── i3/
+    │   │   ├── config     # Main i3 configuration
+    │   │   └── config.d/
+    │   │       ├── keybindings.conf
+    │   │       ├── startup.conf
+    │   │       └── workspaces.conf
+    │   ├── i3rs-config.toml   # i3status-rust configuration
+    │   ├── nano/
+    │   │   └── nanorc        # Nano editor configuration
+    │   └── rofi/
+    │       └── config.rasi   # Rofi launcher configuration
+    └── Pictures/
+        └── Wallpapers/
+            ├── set_random_wallpaper.sh
+            └── *.jpg         # Wallpaper files
+```
 
 ## Features
 
-- **System Update**: Updates all installed packages to the latest versions using `pacman`.
-- **Essential Package Installation**: Installs necessary packages like `git`, `brightnessctl`, `bluez`, `thunar`, `rofi`, and others for a fully functional desktop environment.
-- **Yay AUR Helper Installation**: Installs the `yay` AUR helper for managing AUR packages if it is not already installed.
-- **Git Configuration**: Optionally sets up your Git username and email for version control.
-- **Directory Setup**: Creates essential directories (`Documents`, `Downloads`, `Projects`, etc.) in your home directory.
-- **Configuration File Deployment**: Copies various configuration files (e.g., `.bashrc`, i3 configuration files) and sets appropriate permissions.
-- **System Services Management**: Enables and starts services like Bluetooth.
-- **System Cleanup**: Cleans up the package cache to free space after installation.
+- ✨ Automated system setup
+- 🔒 Secure configuration backup and restore
+- 📦 Organized package management
+- 🎨 Pre-configured desktop environment
+- ⚡ Performance optimizations
+- 🛠 Development tools setup
+- 🔧 Hardware support configuration
+- 📝 Detailed logging
+- 🔍 Installation verification
+
+### Key Components
+
+1. **Window Manager**: i3-gaps with i3status-rust
+2. **Application Launcher**: Rofi
+3. **Terminal**: Alacritty
+4. **File Manager**: Thunar
+5. **Notification System**: Dunst
+6. **Text Editor**: Nano with syntax highlighting
+7. **Development Tools**: Git, base-devel, and more
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/arch-i3-setup.git
+cd arch-i3-setup
+```
+
+2. Make the script executable:
+```bash
+chmod +x setup.sh
+```
+
+3. Run the script:
+```bash
+./setup.sh
+```
 
 ## Usage
 
-1. **System Update and Package Installation**: The script first updates the system and installs essential packages, including `brightnessctl` for managing screen brightness.
-2. **Git Configuration**: You will be asked if you want to set up your Git username and email during the script execution. If you choose "Yes," you will be prompted to enter your Git details. If you prefer to skip this, the script will continue without setting up Git.
-3. **Screen Brightness Adjustment**: Automatically sets screen brightness to 3% (can be modified in the script if needed).
-4. **AUR Helper Installation**: If `yay` is not installed, it will be cloned, built, and installed from the AUR.
-5. **Bluetooth Service Activation**: The script enables and starts the Bluetooth service.
-6. **Directory Creation**: Sets up commonly used directories in your home folder.
-7. **Configuration File Setup**: Copies the necessary configuration files and applies the correct permissions.
-8. **Package Cache Cleanup**: Clears the package cache to optimize system space usage.
+### Command Line Options
 
-## Configuration Details
+```bash
+./setup.sh [options]
+```
 
-The script includes multiple configuration steps:
+Available options:
+- `--dry-run`: Test the installation without making changes
+- `--skip-packages`: Skip package installation
+- `--skip-git`: Skip Git configuration
+- `--skip-backup`: Skip configuration backup
 
-- **Git Configuration**:
-    - If you choose to configure Git, you'll be prompted to enter:
-        - Your Git username (e.g., `your-username`)
-        - Your Git email (e.g., `your-email@example.com`)
+### Example Usage
 
-- **Directories Created**:
-    - `~/Documents`
-    - `~/Downloads`
-    - `~/Pictures`
-    - `~/Music`
-    - `~/Videos`
-    - `~/Projects`
+```bash
+# Full installation
+./setup.sh
 
-- **Packages Installed**:
-    - Common packages such as:
-        - `noto-fonts-emoji`
-        - `bash-completion`
-        - `neofetch`
-        - `thunar`
-        - `rofi`
-        - `bluez`, `bluez-utils`, and more.
+# Test run without making changes
+./setup.sh --dry-run
 
-- **Bluetooth Service**:
-    - Enables and starts the `bluetooth` service using `systemctl`.
+# Install without Git configuration
+./setup.sh --skip-git
+
+# Install without creating backups
+./setup.sh --skip-backup
+```
+
+## Packages
+
+### Core Packages
+- `stow`: Symlink farm manager
+- `alacritty`: Terminal emulator
+- `git`: Version control
+- `base-devel`: Development tools
+- `brightnessctl`: Brightness control
+- `python-i3ipc`: i3 IPC Python library
+
+### Window Manager Packages
+- `i3status-rust`: Status bar
+- `rofi`: Application launcher
+- `dunst`: Notification daemon
+- `hsetroot`: Wallpaper setter
+
+### Utility Packages
+- `mousepad`: Text editor
+- `bash-completion`: Bash completion
+- `zip/unzip`: Compression utilities
+- `neofetch`: System information
+- `curl/wget`: File download utilities
+
+### File Manager Packages
+- `thunar`: File manager
+- `thunar-volman`: Volume manager
+- `thunar-archive-plugin`: Archive plugin
+- `gvfs`: Virtual filesystem
+
+## Configuration
+
+### Dotfiles
+The script uses GNU Stow to manage dotfiles. All configuration files are stored in the `dotfiles` directory and are automatically symlinked to their correct locations.
+
+### Customization Points
+
+1. **i3 Configuration** (`~/.config/i3/config.d/`):
+   - `keybindings.conf`: Keyboard shortcuts
+   - `startup.conf`: Autostart applications
+   - `workspaces.conf`: Workspace layout
+
+2. **Terminal** (`~/.config/alacritty/`):
+   - Font settings
+   - Color schemes
+   - Terminal behavior
+
+3. **Application Launcher** (`~/.config/rofi/`):
+   - Theme customization
+   - Keyboard shortcuts
+   - Search behavior
 
 ## Troubleshooting
 
-If you encounter any issues while running the script, consider the following:
+### Logs
+- Installation logs are stored in `~/setup_YYYYMMDD_HHMMSS.log`
+- Each installation creates a unique log file
+- Check logs for error messages and warnings
 
-- **Permissions**: Make sure the script has executable permissions:
-    ```bash
-    chmod +x setup.sh
-    ```
+### Common Issues
 
-- **Pacman Errors**: If you encounter issues with `pacman` (e.g., locked databases), you might need to unlock it:
-    ```bash
-    sudo rm /var/lib/pacman/db.lck
-    ```
+1. **Package Installation Fails**
+   ```bash
+   # Update package database
+   sudo pacman -Syy
+   # Try installation again
+   ./setup.sh
+   ```
 
-- **AUR Helper Installation Fails**:
-    - Ensure that `git` and `base-devel` are installed properly before running the script.
-    - Verify that the internet connection is active, as the script will clone the `yay` repository.
+2. **Stow Conflicts**
+   ```bash
+   # Backup existing configs
+   mv ~/.config/i3 ~/.config/i3.bak
+   # Run script again
+   ./setup.sh
+   ```
 
-- **Customizing the Script**:
-    - Feel free to modify the script to adjust package names, set different configurations, or add more customizations to suit your needs.
+3. **Permission Issues**
+   ```bash
+   # Check user permissions
+   groups
+   # Ensure user is in required groups
+   sudo usermod -aG wheel,video,audio $USER
+   ```
+
+### Backup and Restore
+
+- Backups are stored in `~/config_backups/YYYYMMDD_HHMMSS/`
+- Each backup includes all existing configurations
+- Automatic restore on installation failure
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+### Development Guidelines
+
+- Follow shell script best practices
+- Test changes with `--dry-run`
+- Update documentation
+- Add comments for complex operations
 
 ## License
 
-This project is open-source and available under the [MIT License](LICENSE).
+This project is licensed under the MIT License
+
+## Acknowledgments
+
+- i3 Window Manager team
+- Arch Linux community
+- GNU Stow developers
+- All package maintainers
 
 ---
 
-> **Note**: This script is only designed for Arch Linux with i3 window manager. It may not work as expected on other Linux distributions.
+**Note**: This script is provided as-is. Always review scripts before running them and ensure they meet your needs. Make backups before making system-wide changes.

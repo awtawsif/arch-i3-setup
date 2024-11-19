@@ -4,7 +4,7 @@
 set $mod Mod1
 
 # Set a Wallpaper
-exec_always --no-startup-id ~/.config/scripts/set_random_wallpaper.sh
+exec_always --no-startup-id ~/Pictures/Wallpapers/set_random_wallpaper.sh
 
 # Applications
 set $terminal alacritty

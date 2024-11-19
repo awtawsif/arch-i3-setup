@@ -119,8 +119,6 @@ main() {
         sudo pacman -Syu --noconfirm --needed \
             stow \
             alacritty \
-            git \
-            base-devel \
             brightnessctl \
             nano-syntax-highlighting \
             python-i3ipc \
@@ -129,8 +127,6 @@ main() {
             zip \
             unzip \
             neofetch \
-            curl \
-            wget \
             xss-lock \
             bluez \
             bluez-utils \
@@ -184,6 +180,7 @@ main() {
     # Copy configuration files
     echo -e "${YELLOW}Copying configuration files...${NC}"
     sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/ || handle_error "Failed to copy 40-libinput.conf"
+    cp -r Wallpapers ~/Pictures/ || handle_error "Failed to copy wallpapers"
     cd dotfiles
     stow --adopt .
     cd ..

@@ -1,84 +1,76 @@
-# Arch Linux i3 Setup Script
+# System Setup Installation Script
 
-A comprehensive setup script for Arch Linux with i3 window manager, including dotfiles management and system configuration. This script automates the process of setting up a new Arch Linux installation with i3 window manager and various quality-of-life improvements.
+A comprehensive bash script for automating the setup and configuration of an Arch Linux system with i3 window manager. This script handles package installation, system configuration, and dotfiles management with extensive error handling and logging capabilities.
 
-## Table of Contents
+## 🚀 Features
 
-- [Prerequisites](#prerequisites)
-- [Directory Structure](#directory-structure)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Packages](#packages)
-- [Configuration](#configuration)
-- [Customization](#customization)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
+- Full system update and package installation with organized package groups
+- Automated dotfiles management using GNU Stow
+- Git configuration setup
+- AUR package support via `yay`
+- Bluetooth service configuration
+- Screen brightness management
+- Comprehensive logging system
+- Progress animations for long-running tasks
+- Error handling and validation
+- Color-coded output for better readability
+- Force mode option to skip file/directory checks
 
-## Prerequisites
+## 📋 Prerequisites
 
-- A fresh Arch Linux installation
+- Arch Linux base installation
 - Internet connection
-- Base system packages (`base` `base-devel`)
-- A non-root user with sudo privileges
-- X.org server installed (`xorg` `xorg-xinit`)
+- Non-root user with sudo privileges
 
-## Directory Structure
+## 📦 Package Groups
 
-```
-Projects/i3-wm/
-├── setup.sh                 # Main installation script
-├── 40-libinput.conf        # X11 input configuration
-├── README.md               # This file
-└── dotfiles/
-    ├── .bashrc            # Bash configuration
-    ├── .config/
-    │   ├── i3/
-    │   │   ├── config     # Main i3 configuration
-    │   │   └── config.d/
-    │   │       ├── keybindings.conf
-    │   │       ├── startup.conf
-    │   │       └── workspaces.conf
-    │   ├── i3rs-config.toml   # i3status-rust configuration
-    │   ├── nano/
-    │   │   └── nanorc        # Nano editor configuration
-    │   └── rofi/
-    │       └── config.rasi   # Rofi launcher configuration
-    └── Pictures/
-        └── Wallpapers/
-            ├── set_random_wallpaper.sh
-            └── *.jpg         # Wallpaper files
-```
+### Core Packages
+- `base-devel` - Development tools
+- `stow` - Symlink farm manager
+- `alacritty` - Terminal emulator
+- `brightnessctl` - Brightness control
+- `nano-syntax-highlighting` - Syntax highlighting for nano
+- `python-i3ipc` - Python i3 IPC library
+- `mousepad` - Text editor
+- `bash-completion` - Bash completion utilities
 
-## Features
+### Archive Packages
+- `zip` - Compression utility
+- `unzip` - Decompression utility
+- `xarchiver` - Archive manager
 
-- ✨ Automated system setup
-- 🔒 Secure configuration backup and restore
-- 📦 Organized package management
-- 🎨 Pre-configured desktop environment
-- ⚡ Performance optimizations
-- 🛠 Development tools setup
-- 🔧 Hardware support configuration
-- 📝 Detailed logging
-- 🔍 Installation verification
+### System Packages
+- `neofetch` - System information tool
+- `xss-lock` - X screen saver
+- `bluez` & `bluez-utils` - Bluetooth support
+- `blueman` - Bluetooth manager
+- `lxappearance` - GTK theme switcher
+- `man-db` - Manual pages
 
-### Key Components
+### File Manager Packages
+- `thunar` - File manager
+- `thunar-volman` - Volume manager
+- `thunar-archive-plugin` - Archive plugin
+- `gvfs` & `gvfs-mtp` - Virtual filesystem
 
-1. **Window Manager**: i3-gaps with i3status-rust
-2. **Application Launcher**: Rofi
-3. **Terminal**: Alacritty
-4. **File Manager**: Thunar
-5. **Notification System**: Dunst
-6. **Text Editor**: Nano with syntax highlighting
-7. **Development Tools**: Git, base-devel, and more
+### UI Packages
+- `hsetroot` - Wallpaper utility
+- `flameshot` - Screenshot tool
+- `dunst` - Notification daemon
+- `rofi` - Application launcher
+- `i3status-rust` - Status bar
 
-## Installation
+### Theme Packages
+- `ttf-jetbrains-mono-nerd` - Font package
+- `gnome-themes-standard` - GTK themes
+- `papirus-icon-theme` - Icon theme
+
+## 🚀 Installation
 
 1. Clone the repository:
 ```bash
 git clone https://github.com/abrar-wadud/arch-i3-setup.git
-cd arch-i3-setup
+cd arch-i3-setup.git
 ```
 
 2. Make the script executable:
@@ -88,155 +80,63 @@ chmod +x setup.sh
 
 3. Run the script:
 ```bash
-./setup.sh
-```
-
-## Usage
-
-### Command Line Options
-
-```bash
-./setup.sh [options]
-```
-
-Available options:
-- `--dry-run`: Test the installation without making changes
-- `--skip-packages`: Skip package installation
-- `--skip-git`: Skip Git configuration
-- `--skip-backup`: Skip configuration backup
-
-### Example Usage
-
-```bash
-# Full installation
+# Normal mode with all checks
 ./setup.sh
 
-# Test run without making changes
-./setup.sh --dry-run
-
-# Install without Git configuration
-./setup.sh --skip-git
-
-# Install without creating backups
-./setup.sh --skip-backup
+# Force mode to skip file/directory checks
+./setup.sh --force
 ```
 
-## Packages
+## ⚙️ Command Line Options
 
-### Core Packages
-- `stow`: Symlink farm manager
-- `alacritty`: Terminal emulator
-- `git`: Version control
-- `base-devel`: Development tools
-- `brightnessctl`: Brightness control
-- `python-i3ipc`: i3 IPC Python library
+- `--force`: Skip the initial file and directory checks. Useful when:
+  - Running the script from a different directory
+  - Testing specific components
+  - Reinstalling on an existing system
 
-### Window Manager Packages
-- `i3status-rust`: Status bar
-- `rofi`: Application launcher
-- `dunst`: Notification daemon
-- `hsetroot`: Wallpaper setter
+## 📝 Logging
 
-### Utility Packages
-- `mousepad`: Text editor
-- `bash-completion`: Bash completion
-- `zip/unzip`: Compression utilities
-- `neofetch`: System information
-- `curl/wget`: File download utilities
+- All installation steps are logged to a timestamped file: `~/setup_YYYYMMDD_HHMMSS.log`
+- Errors and warnings are clearly marked in the log file
+- Console output is color-coded for better readability
+- Each package group installation is separately logged
 
-### File Manager Packages
-- `thunar`: File manager
-- `thunar-volman`: Volume manager
-- `thunar-archive-plugin`: Archive plugin
-- `gvfs`: Virtual filesystem
+## 🔧 Directory Structure
 
-## Configuration
+The script creates the following directory structure in your home folder:
+```
+~/
+├── Documents/
+├── Downloads/
+├── Pictures/
+│   └── Wallpapers/
+├── Music/
+├── Videos/
+└── Projects/
+```
 
-### Dotfiles
-The script uses GNU Stow to manage dotfiles. All configuration files are stored in the `dotfiles` directory and are automatically symlinked to their correct locations.
+## ⚠️ Important Notes
 
-### Customization Points
+1. Do not run this script as root
+2. Ensure you have a stable internet connection
+3. The script will make changes to your system configuration
+4. A system reboot is recommended after installation
+5. No backup functionality is included as this script is designed for fresh installations
+6. Package groups can be easily modified by editing the arrays at the top of the script
 
-1. **i3 Configuration** (`~/.config/i3/config.d/`):
-   - `keybindings.conf`: Keyboard shortcuts
-   - `startup.conf`: Autostart applications
-   - `workspaces.conf`: Workspace layout
+## 🐛 Troubleshooting
 
-2. **Terminal** (`~/.config/alacritty/`):
-   - Font settings
-   - Color schemes
-   - Terminal behavior
+- Check the log file for detailed error messages
+- Look for specific package group installation failures in the log
+- Use `--force` option if you're having issues with file/directory checks
+- Verify internet connectivity
+- Make sure you have sudo privileges
+- Check the package group arrays if you need to modify installed packages
 
-3. **Application Launcher** (`~/.config/rofi/`):
-   - Theme customization
-   - Keyboard shortcuts
-   - Search behavior
+## 🤝 Contributing
 
-## Troubleshooting
-
-### Logs
-- Installation logs are stored in `~/setup_YYYYMMDD_HHMMSS.log`
-- Each installation creates a unique log file
-- Check logs for error messages and warnings
-
-### Common Issues
-
-1. **Package Installation Fails**
-   ```bash
-   # Update package database
-   sudo pacman -Syy
-   # Try installation again
-   ./setup.sh
-   ```
-
-2. **Stow Conflicts**
-   ```bash
-   # Backup existing configs
-   mv ~/.config/i3 ~/.config/i3.bak
-   # Run script again
-   ./setup.sh
-   ```
-
-3. **Permission Issues**
-   ```bash
-   # Check user permissions
-   groups
-   # Ensure user is in required groups
-   sudo usermod -aG wheel,video,audio $USER
-   ```
-
-### Backup and Restore
-
-- Backups are stored in `~/config_backups/YYYYMMDD_HHMMSS/`
-- Each backup includes all existing configurations
-- Automatic restore on installation failure
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-### Development Guidelines
-
-- Follow shell script best practices
-- Test changes with `--dry-run`
-- Update documentation
-- Add comments for complex operations
-
-## License
-
-This project is licensed under the MIT License
-
-## Acknowledgments
-
-- i3 Window Manager team
-- Arch Linux community
-- GNU Stow developers
-- All package maintainers
-
----
-
-**Note**: This script is provided as-is. Always review scripts before running them and ensure they meet your needs. Make backups before making system-wide changes.
+Feel free to fork this repository and submit pull requests for any improvements. Some areas you might consider:
+- Adding new package groups
+- Improving error handling
+- Adding new features or configurations
+- Optimizing installation process

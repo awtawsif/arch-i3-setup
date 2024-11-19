@@ -8,6 +8,71 @@ BLUE="\033[0;34m"
 CYAN="\033[0;36m"
 NC="\033[0m" # No Color
 
+# Define package groups
+CORE_PACKAGES=(
+    base-devel
+    stow
+    alacritty
+    brightnessctl
+    nano-syntax-highlighting
+    python-i3ipc
+    mousepad
+    bash-completion
+)
+
+ARCHIVE_PACKAGES=(
+    zip
+    unzip
+    xarchiver
+)
+
+SYSTEM_PACKAGES=(
+    neofetch
+    xss-lock
+    bluez
+    bluez-utils
+    blueman
+    lxappearance
+    man-db
+)
+
+FILE_MANAGER_PACKAGES=(
+    thunar
+    thunar-volman
+    thunar-archive-plugin
+    gvfs
+    gvfs-mtp
+)
+
+UI_PACKAGES=(
+    hsetroot
+    flameshot
+    dunst
+    rofi
+    i3status-rust
+)
+
+THEME_PACKAGES=(
+    ttf-jetbrains-mono-nerd
+    gnome-themes-standard
+    papirus-icon-theme
+)
+
+# Parse command line arguments
+FORCE_MODE=false
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --force)
+            FORCE_MODE=true
+            shift
+            ;;
+        *)
+            echo -e "${RED}Unknown option: $1${NC}"
+            exit 1
+            ;;
+    esac
+done
+
 # Log the installation process to a file with timestamp
 LOGFILE=~/setup_$(date +%Y%m%d_%H%M%S).log
 mkdir -p "$(dirname "$LOGFILE")"
@@ -20,6 +85,10 @@ echo "║         System Setup Installation         ║"
 echo "╚═══════════════════════════════════════════╝"
 echo -e "${NC}"
 echo -e "${BLUE}Logging the installation process to $LOGFILE${NC}"
+
+if [ "$FORCE_MODE" = true ]; then
+    echo -e "${YELLOW}Running in force mode - skipping file and directory checks${NC}"
+fi
 
 # Function to check if script is run as root
 check_not_root() {
@@ -86,11 +155,44 @@ install_aur_package() {
     return 0
 }
 
+# Function to check required files and directories
+check_requirements() {
+    if [ "$FORCE_MODE" = true ]; then
+        echo -e "${YELLOW}Skipping requirements check due to force mode${NC}"
+        return 0
+    fi
+
+    # Verify we're in the correct directory
+    if [ ! -f "./setup.sh" ]; then
+        echo -e "${RED}Please run this script from the i3-wm directory${NC}"
+        exit 1
+    fi
+    
+    # Check for required files and directories
+    local required_files=("40-libinput.conf" "setup.sh")
+    local required_dirs=("dotfiles" "Wallpapers" "dotfiles/.config/i3" "dotfiles/.config/rofi")
+    
+    for file in "${required_files[@]}"; do
+        if [ ! -f "$file" ]; then
+            echo -e "${RED}Required file '$file' not found!${NC}"
+            exit 1
+        fi
+    done
+    
+    for dir in "${required_dirs[@]}"; do
+        if [ ! -d "$dir" ]; then
+            echo -e "${RED}Required directory '$dir' not found!${NC}"
+            exit 1
+        fi
+    done
+}
+
 # Main installation function
 main() {
     # Initial checks
     check_not_root
     check_internet
+    check_requirements
     
     # Create timestamp for this installation
     local TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -116,44 +218,35 @@ main() {
     # System update and package installation
     echo -e "${YELLOW}Updating system and installing packages...${NC}"
     {
-        sudo pacman -Syu --noconfirm --needed \
-            stow \
-            alacritty \
-            brightnessctl \
-            nano-syntax-highlighting \
-            python-i3ipc \
-            mousepad \
-            bash-completion \
-            zip \
-            unzip \
-            neofetch \
-            xss-lock \
-            bluez \
-            bluez-utils \
-            blueman \
-            lxappearance \
-            man-db \
-            thunar \
-            thunar-volman \
-            thunar-archive-plugin \
-            xarchiver \
-            gvfs \
-            gvfs-mtp \
-            hsetroot \
-            flameshot \
-            dunst \
-            rofi \
-            i3status-rust \
-            ttf-jetbrains-mono-nerd \
-            gnome-themes-standard \
-            papirus-icon-theme
+        # Update system first
+        sudo pacman -Syu --noconfirm || handle_error "System update failed"
+        
+        # Install packages by groups
+        echo -e "${BLUE}Installing core packages...${NC}"
+        sudo pacman -S --noconfirm --needed "${CORE_PACKAGES[@]}" || handle_error "Core packages installation failed"
+        
+        echo -e "${BLUE}Installing archive tools...${NC}"
+        sudo pacman -S --noconfirm --needed "${ARCHIVE_PACKAGES[@]}" || handle_error "Archive packages installation failed"
+        
+        echo -e "${BLUE}Installing system packages...${NC}"
+        sudo pacman -S --noconfirm --needed "${SYSTEM_PACKAGES[@]}" || handle_error "System packages installation failed"
+        
+        echo -e "${BLUE}Installing file manager packages...${NC}"
+        sudo pacman -S --noconfirm --needed "${FILE_MANAGER_PACKAGES[@]}" || handle_error "File manager packages installation failed"
+        
+        echo -e "${BLUE}Installing UI packages...${NC}"
+        sudo pacman -S --noconfirm --needed "${UI_PACKAGES[@]}" || handle_error "UI packages installation failed"
+        
+        echo -e "${BLUE}Installing theme packages...${NC}"
+        sudo pacman -S --noconfirm --needed "${THEME_PACKAGES[@]}" || handle_error "Theme packages installation failed"
     } &
     show_progress $!
-    handle_error "Failed to install packages"
     
-    # Set screen brightness
+    # Set screen brightness with error handling
     echo -e "${YELLOW}Setting screen brightness to 3%...${NC}"
-    sudo brightnessctl set 3% || handle_error "Failed to set brightness"
+    if ! sudo brightnessctl set 3%; then
+        echo -e "${YELLOW}Warning: Failed to set brightness, continuing anyway...${NC}"
+    fi
     
     # Install yay if not present
     if ! command_exists yay; then
@@ -163,9 +256,11 @@ main() {
         rm -rf /tmp/yay-bin
     fi
     
-    # Enable services
+    # Enable services with error handling
     echo -e "${YELLOW}Enabling system services...${NC}"
-    sudo systemctl enable --now bluetooth || handle_error "Failed to enable bluetooth"
+    if ! sudo systemctl enable bluetooth; then
+        echo -e "${YELLOW}Warning: Failed to enable bluetooth service, continuing anyway...${NC}"
+    fi
     
     # Create directories
     echo -e "${YELLOW}Creating directory structure...${NC}"
@@ -175,14 +270,18 @@ main() {
         ~/Pictures \
         ~/Music \
         ~/Videos \
-        ~/Projects \
+        ~/Projects
     
     # Copy configuration files
     echo -e "${YELLOW}Copying configuration files...${NC}"
+    sudo mkdir -p /etc/X11/xorg.conf.d/
     sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/ || handle_error "Failed to copy 40-libinput.conf"
     cp -r Wallpapers ~/Pictures/ || handle_error "Failed to copy wallpapers"
-    stow --dir=dotfiles --target=$HOME --adopt
-    git restore .
+    
+    # Use stow for dotfiles
+    echo -e "${YELLOW}Setting up dotfiles with stow...${NC}"
+    stow --dir=dotfiles --target="$HOME" --adopt . || handle_error "Failed to stow dotfiles"
+    git restore . || handle_error "Failed to restore original dotfiles"
     
     # Set permissions
     chmod +x ~/Pictures/Wallpapers/set_random_wallpaper.sh || handle_error "Failed to set script permissions"
@@ -190,14 +289,15 @@ main() {
     # Clean up
     echo -e "${YELLOW}Cleaning up...${NC}"
     sudo pacman -Sc --noconfirm || handle_error "Failed to clean package cache"
-    sudo rm -r ~/.bash_profile
+    
+    # Remove bash_profile if it exists
+    rm -f ~/.bash_profile
     
     # Installation complete
     echo -e "${GREEN}╔═══════════════════════════════════════════╗${NC}"
     echo -e "${GREEN}║         Installation Complete!            ║${NC}"
     echo -e "${GREEN}╚═══════════════════════════════════════════╝${NC}"
     echo -e "${YELLOW}Installation log: $LOGFILE${NC}"
-    echo -e "${YELLOW}Backup directory: $BACKUP_DIR${NC}"
     echo -e "${CYAN}Please reboot your system to apply all changes.${NC}"
 }
 

@@ -181,7 +181,7 @@ main() {
     echo -e "${YELLOW}Copying configuration files...${NC}"
     sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/ || handle_error "Failed to copy 40-libinput.conf"
     cp -r Wallpapers ~/Pictures/ || handle_error "Failed to copy wallpapers"
-    stow --dir dotfiles/ --target $HOME .
+    stow --dir=dotfiles --target=$HOME --adopt
     git restore .
     
     # Set permissions

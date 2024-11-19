@@ -77,7 +77,7 @@ Projects/i3-wm/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/arch-i3-setup.git
+git clone https://github.com/abrar-wadud/arch-i3-setup.git
 cd arch-i3-setup
 ```
 

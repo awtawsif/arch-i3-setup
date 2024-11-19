@@ -15,7 +15,6 @@ CORE_PACKAGES=(
     alacritty
     brightnessctl
     nano-syntax-highlighting
-    python-i3ipc
     mousepad
     bash-completion
 )

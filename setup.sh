@@ -181,9 +181,8 @@ main() {
     echo -e "${YELLOW}Copying configuration files...${NC}"
     sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/ || handle_error "Failed to copy 40-libinput.conf"
     cp -r Wallpapers ~/Pictures/ || handle_error "Failed to copy wallpapers"
-    cd dotfiles
-    stow --adopt .
-    cd ..
+    stow --dir dotfiles/ --target $HOME .
+    git restore .
     
     # Set permissions
     chmod +x ~/Pictures/Wallpapers/set_random_wallpaper.sh || handle_error "Failed to set script permissions"

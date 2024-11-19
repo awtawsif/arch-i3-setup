@@ -8,9 +8,6 @@ BLUE="\033[0;34m"
 CYAN="\033[0;36m"
 NC="\033[0m" # No Color
 
-# Backup directory
-BACKUP_DIR=~/config_backups/$(date +%Y%m%d_%H%M%S)
-
 # Log the installation process to a file with timestamp
 LOGFILE=~/setup_$(date +%Y%m%d_%H%M%S).log
 mkdir -p "$(dirname "$LOGFILE")"
@@ -37,32 +34,6 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Function to backup existing configurations
-backup_configs() {
-    echo -e "${YELLOW}Creating backup of existing configurations...${NC}"
-    mkdir -p "$BACKUP_DIR"
-    
-    # List of files/directories to backup
-    local configs=(
-        ~/.config/i3
-        ~/.config/rofi
-        ~/.bashrc
-        ~/.config/nano/nanorc
-    )
-    
-    for config in "${configs[@]}"; do
-        if [ -e "$config" ]; then
-            cp -r "$config" "$BACKUP_DIR/" 2>/dev/null || {
-                echo -e "${RED}Failed to backup ${config}${NC}"
-                return 1
-            }
-        fi
-    done
-    
-    echo -e "${GREEN}Backup created at: $BACKUP_DIR${NC}"
-    return 0
-}
-
 # Function to check internet connectivity
 check_internet() {
     echo -e "${YELLOW}Checking internet connection...${NC}"
@@ -71,36 +42,6 @@ check_internet() {
         exit 1
     fi
     echo -e "${GREEN}Internet connection verified.${NC}"
-}
-
-# Function to check system requirements
-check_system() {
-    echo -e "${YELLOW}Checking system requirements...${NC}"
-    
-    # Check if running on Arch Linux
-    if [ ! -f /etc/arch-release ]; then
-        echo -e "${RED}This script is designed for Arch Linux${NC}"
-        exit 1
-    fi
-    
-    echo -e "${GREEN}System requirements met.${NC}"
-}
-
-# Function to check if files exist before copying
-check_files() {
-    local missing_files=()
-    for file in "$@"; do
-        if [ ! -e "$file" ]; then
-            missing_files+=("$file")
-        fi
-    done
-    
-    if [ ${#missing_files[@]} -ne 0 ]; then
-        echo -e "${RED}Error: The following required files are missing:${NC}"
-        printf '%s\n' "${missing_files[@]}"
-        return 1
-    fi
-    return 0
 }
 
 # Function to handle errors
@@ -150,33 +91,10 @@ main() {
     # Initial checks
     check_not_root
     check_internet
-    check_system
     
     # Create timestamp for this installation
     local TIMESTAMP=$(date +%Y%m%d_%H%M%S)
     echo -e "${BLUE}Installation started at: $(date)${NC}"
-    
-    # Backup existing configurations
-    backup_configs || {
-        echo -e "${RED}Failed to create backup. Exiting...${NC}"
-        exit 1
-    }
-    
-    # Verify required files
-    echo -e "${YELLOW}Checking for required configuration files...${NC}"
-    if ! check_files \
-        "40-libinput.conf" \
-        "rofi" \
-        "i3rs-config.toml" \
-        "config.d" \
-        "config" \
-        ".bashrc" \
-        "Wallpapers" \
-        "scripts" \
-        "nanorc"; then
-        echo -e "${RED}Missing required files. Please ensure all configuration files are present.${NC}"
-        exit 1
-    fi
     
     # Git configuration
     echo -e "${YELLOW}Do you want to configure Git with your username and email? (y/n)${NC}"
@@ -262,8 +180,6 @@ main() {
         ~/Music \
         ~/Videos \
         ~/Projects \
-        ~/.config/i3 \
-        ~/.config/nano
     
     # Copy configuration files
     echo -e "${YELLOW}Copying configuration files...${NC}"
@@ -273,7 +189,7 @@ main() {
     cd ..
     
     # Set permissions
-    chmod +x ~/.config/scripts/set_random_wallpaper.sh || handle_error "Failed to set script permissions"
+    chmod +x ~/Pictures/Wallpapers/set_random_wallpaper.sh || handle_error "Failed to set script permissions"
     
     # Clean up
     echo -e "${YELLOW}Cleaning up...${NC}"

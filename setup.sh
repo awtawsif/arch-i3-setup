@@ -10,6 +10,8 @@ NC="\033[0m" # No Color
 
 # Define package groups
 CORE_PACKAGES=(
+    exa
+    bat
     base-devel
     stow
     alacritty
@@ -20,6 +22,7 @@ CORE_PACKAGES=(
 )
 
 ARCHIVE_PACKAGES=(
+    unrar
     zip
     unzip
     xarchiver

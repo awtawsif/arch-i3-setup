@@ -93,14 +93,6 @@ if command -v bat &> /dev/null; then
     export BAT_THEME="Dracula"
 fi
 
-if command -v fd &> /dev/null; then
-    alias find='fd'
-fi
-
-if command -v rg &> /dev/null; then
-    alias grep='rg'
-fi
-
 # ===== Smart Aliases =====
 # Colorize commands when possible
 alias diff='diff --color=auto'
@@ -173,12 +165,6 @@ shopt -s nocaseglob      # Case-insensitive globbing
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
-
-# FZF configuration for better performance
-export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --inline-info"
-export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # ===== Path Configuration =====
 # Clean PATH to avoid duplicates

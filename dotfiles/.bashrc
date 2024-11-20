@@ -1,124 +1,213 @@
-# ~/.bashrc
+#!/usr/bin/env bash
 
-# 1. Ensure the script is not run multiple times
-# This checks if the environment variable 'BASHRC_LOADED' is already set.
-# If it's set, the script exits (returns) to prevent re-execution if the file is sourced again.
-# This avoids unnecessary reloading of configurations and aliases, improving efficiency.
-if [ "$BASHRC_LOADED" ]; then
-    return
+# ===== Performance Optimizations =====
+# Reduce disk writes for history
+export HISTSIZE=50000
+export HISTFILESIZE=100000
+export HISTCONTROL=ignoreboth:erasedups
+export HISTTIMEFORMAT="%F %T "
+export HISTIGNORE="ls:ll:cd:pwd:bg:fg:history:clear:exit"
+shopt -s histappend
+shopt -s cmdhist
+
+# Disk IO optimizations
+export FIGNORE='.o:~:.pyc'
+export MAKEFLAGS="-j$(nproc)"
+
+# Shell performance options
+set -o noclobber              # Prevent file overwrite with >
+shopt -s checkwinsize        # Update window size after each command
+shopt -s no_empty_cmd_completion  # No empty command completion
+shopt -s extglob             # Extended pattern matching
+
+# ===== Visual Enhancements =====
+# Colors and formatting
+if [[ $TERM != "linux" && -x /usr/bin/tput ]]; then
+    BOLD="$(tput bold)"
+    RED="$(tput setaf 1)"
+    GREEN="$(tput setaf 2)"
+    YELLOW="$(tput setaf 3)"
+    BLUE="$(tput setaf 4)"
+    PURPLE="$(tput setaf 5)"
+    CYAN="$(tput setaf 6)"
+    WHITE="$(tput setaf 7)"
+    RESET="$(tput sgr0)"
+else
+    BOLD="\e[1m"
+    RED="\e[31m"
+    GREEN="\e[32m"
+    YELLOW="\e[33m"
+    BLUE="\e[34m"
+    PURPLE="\e[35m"
+    CYAN="\e[36m"
+    WHITE="\e[37m"
+    RESET="\e[0m"
 fi
-export BASHRC_LOADED=1
 
-# 2. Prompt Customization: A colorful, informative prompt
-# The PS1 variable defines the primary prompt shown in the terminal.
-# The prompt includes:
-#   - \u: The username of the current user.
-#   - \h: The hostname of the machine.
-#   - \w: The current working directory.
-#   - Colors to visually separate components:
-#     - Green (\e[0;32m) for the user and hostname.
-#     - Blue (\e[0;34m) for the working directory.
-#   - A newline (\n) to move the command input to the next line.
-#   - \$: Shows '$' for normal users and '#' for root, indicating the privilege level.
-PS1='\[\e[0;32m\]\u@\h:\[\e[0;34m\]\w\[\e[0;32m\]\n\$ \[\e[0m\]'
+# Beautiful minimal prompt with execution time
+timer_start() {
+    timer=${timer:-$SECONDS}
+}
 
-# 3. Color Definitions: Easy-to-use color variables for scripts
-# These variables define color codes that can be used for formatted output.
-# Useful in scripts and commands for highlighting or organizing terminal output.
-export BLACK='\e[0;30m'
-export RED='\e[0;31m'
-export GREEN='\e[1;32m'
-export YELLOW='\e[0;33m'
-export BLUE='\e[0;34m'
-export MAGENTA='\e[0;35m'
-export CYAN='\e[0;36m'
-export WHITE='\e[0;37m'
-export RESET='\e[0m'  # Resets the color back to default
-
-# Usage Example:
-# An alias that prints "Success!" in green text as an example of using the color variables.
-alias success='echo -e "${GREEN}Success!${RESET}"'
-
-# 4. Aliases: Shortcuts for common commands
-# Aliases are defined to shorten frequently used commands and add options automatically.
-alias ll='ls -alF --color=auto'   # Detailed list view with file types and colors
-alias la='ls -A'                  # List all files except '.' and '..'
-alias l='ls -CF'                  # Compact list format with file types
-alias grep='grep --color=auto'   # Enable color highlighting for grep matches
-alias df='df -h'                 # Human-readable disk usage output
-alias du='du -h'                 # Human-readable directory size output
-alias cls='clear'                # Alias for clearing the terminal screen
-
-# 5. Directory Navigation: Quick navigation through directories
-# Aliases for quickly moving up the directory structure.
-alias ..='cd ..'         # Go up one directory
-alias ...='cd ../..'     # Go up two directories
-alias ....='cd ../../..' # Go up three directories
-
-# 6. Custom Functions: Enhance shell functionality
-
-# Extract archives based on file extension
-# A function to automatically extract various archive types based on file extension.
-# It simplifies the process of extracting files by using the appropriate tool.
-extract () {
-    if [ -f $1 ]; then
-        case $1 in
-            *.tar.bz2) tar xjf $1 ;;       # Extract .tar.bz2 files
-            *.tar.gz)  tar xzf $1 ;;       # Extract .tar.gz files
-            *.bz2)     bunzip2 $1 ;;       # Extract .bz2 files
-            *.rar)     unrar x $1 ;;       # Extract .rar files
-            *.gz)      gunzip $1 ;;        # Extract .gz files
-            *.tar)     tar xf $1 ;;        # Extract .tar files
-            *.tbz2)    tar xjf $1 ;;       # Extract .tbz2 files
-            *.tgz)     tar xzf $1 ;;       # Extract .tgz files
-            *.zip)     unzip $1 ;;         # Extract .zip files
-            *.Z)       uncompress $1 ;;    # Uncompress .Z files
-            *.7z)      7z x $1 ;;          # Extract .7z files
-            *)         echo "'$1' cannot be extracted via extract()" ;;
-        esac
-    else
-        echo "'$1' is not a valid file"    # Error message if the input is not a file
+timer_stop() {
+    local elapsed=$((SECONDS - timer))
+    unset timer
+    if [[ $elapsed -gt 2 ]]; then
+        echo "${YELLOW}⏱ ${elapsed}s${RESET}"
     fi
 }
 
-# Search for a pattern in all files in a directory
-# A custom function 'fgrep' to search recursively for a pattern in files within the current directory.
-function fgrep() {
-    grep -r "$1" *  # '-r' flag enables recursive search through all files
+trap 'timer_start' DEBUG
+PROMPT_COMMAND="timer_stop"
+
+# Minimal but informative prompt
+PS1="\[${BOLD}${BLUE}\]┌─[\[${GREEN}\]\u\[${BLUE}\]]─[\[${CYAN}\]\w\[${BLUE}\]]\n\[${BLUE}\]└─\[${RESET}\]\[${BOLD}${PURPLE}\]λ\[${RESET}\] "
+
+# ===== Environment Configuration =====
+# XDG Base Directory
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+
+# Essential environment settings
+export EDITOR="vim"
+export VISUAL="vim"
+export TERM="xterm-256color"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
+# ===== Modern Command Alternatives =====
+# Use modern alternatives if available
+if command -v exa &> /dev/null; then
+    alias ls='exa --icons --group-directories-first'
+    alias ll='exa -l --icons --group-directories-first --git'
+    alias la='exa -la --icons --group-directories-first --git'
+    alias lt='exa --tree --icons --level=2'
+    alias l.='exa -a --icons | grep "^\."'
+fi
+
+if command -v bat &> /dev/null; then
+    alias cat='bat --style=plain'
+    alias less='bat --style=plain'
+    export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+    export BAT_THEME="Dracula"
+fi
+
+if command -v fd &> /dev/null; then
+    alias find='fd'
+fi
+
+if command -v rg &> /dev/null; then
+    alias grep='rg'
+fi
+
+# ===== Smart Aliases =====
+# Colorize commands when possible
+alias diff='diff --color=auto'
+alias ip='ip -color=auto'
+alias grep='grep --color=auto'
+
+# Smart directory navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias -- -='cd -'
+
+# Common operations with confirmation
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
+alias ln='ln -i'
+
+# Pacman shortcuts
+alias pacup='sudo pacman -Syu'
+alias pacin='sudo pacman -S'
+alias pacrem='sudo pacman -Rns'
+alias pacsearch='pacman -Ss'
+alias pacclean='sudo pacman -Sc'
+alias pacorphan='sudo pacman -Rns $(pacman -Qtdq)'
+
+# Package information
+alias pkginfo='pacman -Qi'                      # Query installed package
+alias pkgfile='pacman -Fl'                      # List remote package files
+alias pkgcheck='pacman -Qk'                     # Check package files
+alias pkgdeps='pacman -Qii'                     # Show package dependencies
+
+# ===== Functions =====
+# Create and enter directory
+mkcd() { mkdir -p "$1" && cd "$1"; }
+
+# Smart archive extractor
+extract() {
+    if [ -f "$1" ]; then
+        case "$1" in
+            *.tar.bz2)   tar xjf "$1"     ;;
+            *.tar.gz)    tar xzf "$1"     ;;
+            *.bz2)       bunzip2 "$1"     ;;
+            *.rar)       unrar x "$1"     ;;
+            *.gz)        gunzip "$1"      ;;
+            *.tar)       tar xf "$1"      ;;
+            *.tbz2)      tar xjf "$1"     ;;
+            *.tgz)       tar xzf "$1"     ;;
+            *.zip)       unzip "$1"       ;;
+            *.Z)         uncompress "$1"  ;;
+            *.7z)        7z x "$1"        ;;
+            *)          echo "'$1' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
 }
 
-# 7. Environment Customizations: Set useful environment variables
+# ===== Shell Options =====
+# Better directory navigation
+shopt -s autocd           # Change directory without cd
+shopt -s dirspell        # Correct directory spelling
+shopt -s cdspell         # Correct cd spelling
+shopt -s globstar        # Enable ** glob pattern
+shopt -s dotglob         # Include hidden files in globbing
+shopt -s nocaseglob      # Case-insensitive globbing
 
-# History Settings: Make history more useful
-export HISTCONTROL=ignoreboth:erasedups  # Ignore duplicate commands and commands that start with a space
-export HISTSIZE=10000                    # Store up to 10,000 commands in the history
-export HISTFILESIZE=20000                # Save up to 20,000 commands in the history file
-shopt -s histappend                      # Append new commands to the history file, rather than overwriting it
-
-# Enable Autocorrect for minor mistakes
-shopt -s cdspell  # Automatically corrects minor spelling errors when using 'cd'
-
-# 9. Terminal Features: Enhancements for terminal experience
-
-# Enable programmable completion features
-# These settings enable enhanced tab completion for various commands and options.
+# Bash completion settings
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
-elif [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
 fi
 
-# 11. PS1 Customization based on User
-# Change the prompt based on the current user. 
-# - For root users, the prompt appears in red (\e[1;31m).
-# - For normal users, it appears in green (\e[1;32m).
-# This provides a visual cue about the privilege level.
-if [ "$USER" == "root" ]; then
-    PS1='\[\e[1;31m\]\u@\h:\w# \[\e[0m\]'
-else
-    PS1='\[\e[1;32m\]\u@\h:\w\$ \[\e[0m\]'
+# FZF configuration for better performance
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --inline-info"
+export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# ===== Path Configuration =====
+# Clean PATH to avoid duplicates
+if [ -n "$PATH" ]; then
+    old_PATH=$PATH:
+    PATH=
+    while [ -n "$old_PATH" ]; do
+        x=${old_PATH%%:*}
+        case $PATH: in
+            *:"$x":*) ;;
+            *) PATH=$PATH:$x;;
+        esac
+        old_PATH=${old_PATH#*:}
+    done
+    PATH=${PATH#:}
+    unset old_PATH x
 fi
 
-# 12. Detect and correct accidental "cd" with no arguments
-# If the user types 'cd' without arguments, this option makes it automatically go to the home directory.
-shopt -s autocd
+export PATH="$HOME/.local/bin:$PATH"
+
+# ===== Security =====
+umask 077  # Set secure default permissions
+
+# ===== Performance =====
+# Disable flow control
+stty -ixon  # Enable Ctrl+S for forward search
+
+# Faster keyboard repeat rate (uncomment if needed)
+# xset r rate 200 40  # Delay and rate
+
+# Reduce disk writes
+export LESSHISTFILE=/dev/null

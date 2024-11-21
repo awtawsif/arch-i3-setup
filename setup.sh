@@ -16,9 +16,15 @@ CORE_PACKAGES=(
     stow
     alacritty
     brightnessctl
+    nano
     nano-syntax-highlighting
     mousepad
     bash-completion
+    i3-wm
+    i3blocks
+    xorg-xinit
+    xorg-xauth
+    xorg-server
 )
 
 ARCHIVE_PACKAGES=(
@@ -36,6 +42,7 @@ SYSTEM_PACKAGES=(
     blueman
     lxappearance
     man-db
+    ly
 )
 
 FILE_MANAGER_PACKAGES=(
@@ -199,7 +206,7 @@ main() {
     # Create timestamp for this installation
     local TIMESTAMP=$(date +%Y%m%d_%H%M%S)
     echo -e "${BLUE}Installation started at: $(date)${NC}"
-    
+
     # Git configuration
     echo -e "${YELLOW}Do you want to configure Git with your username and email? (y/n)${NC}"
     read -r configure_git
@@ -215,6 +222,14 @@ main() {
         echo -e "${GREEN}Git configured for user: $github_username${NC}"
     else
         echo -e "${YELLOW}Skipping Git configuration as per user choice.${NC}"
+    fi
+    
+    # Install yay if not present
+    if ! command_exists yay; then
+        echo -e "${YELLOW}Installing yay AUR helper...${NC}"
+        git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin || handle_error "Failed to clone yay"
+        (cd /tmp/yay-bin && makepkg -si --noconfirm) || handle_error "Failed to install yay"
+        rm -rf /tmp/yay-bin
     fi
     
     # System update and package installation
@@ -250,18 +265,16 @@ main() {
         echo -e "${YELLOW}Warning: Failed to set brightness, continuing anyway...${NC}"
     fi
     
-    # Install yay if not present
-    if ! command_exists yay; then
-        echo -e "${YELLOW}Installing yay AUR helper...${NC}"
-        git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin || handle_error "Failed to clone yay"
-        (cd /tmp/yay-bin && makepkg -si --noconfirm) || handle_error "Failed to install yay"
-        rm -rf /tmp/yay-bin
-    fi
-    
     # Enable services with error handling
     echo -e "${YELLOW}Enabling system services...${NC}"
     if ! sudo systemctl enable bluetooth; then
         echo -e "${YELLOW}Warning: Failed to enable bluetooth service, continuing anyway...${NC}"
+    fi
+    
+    echo -e "${YELLOW}Enabling ly display manager service...${NC}"
+    if ! sudo systemctl enable ly.service; then
+        echo -e "${RED}Failed to enable ly service.${NC}"
+        exit 1
     fi
     
     # Create directories
@@ -278,12 +291,9 @@ main() {
     echo -e "${YELLOW}Copying configuration files...${NC}"
     sudo mkdir -p /etc/X11/xorg.conf.d/
     sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/ || handle_error "Failed to copy 40-libinput.conf"
+    cp .bashrc ~/ || handle_error "Failed to copy bash config"
     cp -r Wallpapers ~/Pictures/ || handle_error "Failed to copy wallpapers"
-    
-    # Use stow for dotfiles
-    echo -e "${YELLOW}Setting up dotfiles with stow...${NC}"
-    stow --dir=dotfiles --target="$HOME" --adopt . || handle_error "Failed to stow dotfiles"
-    git restore . || handle_error "Failed to restore original dotfiles"
+    cp -rb .config ~/ || handle_error "Failed to copy config files"
     
     # Set permissions
     chmod +x ~/Pictures/Wallpapers/set_random_wallpaper.sh || handle_error "Failed to set script permissions"

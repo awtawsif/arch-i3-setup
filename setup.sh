@@ -10,6 +10,7 @@ NC="\033[0m" # No Color
 
 # Define package groups
 CORE_PACKAGES=(
+    htop
     exa
     bat
     base-devel
@@ -43,6 +44,8 @@ SYSTEM_PACKAGES=(
     lxappearance
     man-db
     ly
+    network-manager-applet
+    upower
 )
 
 FILE_MANAGER_PACKAGES=(
@@ -62,6 +65,7 @@ UI_PACKAGES=(
 )
 
 THEME_PACKAGES=(
+    ttf-fonts-awesome
     ttf-jetbrains-mono-nerd
     gnome-themes-standard
     papirus-icon-theme

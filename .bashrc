@@ -70,8 +70,7 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 
 # Essential environment settings
-export EDITOR="vim"
-export VISUAL="vim"
+export EDITOR="nano"
 export TERM="xterm-256color"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
@@ -89,7 +88,6 @@ fi
 if command -v bat &> /dev/null; then
     alias cat='bat --style=plain'
     alias less='bat --style=plain'
-    export MANPAGER="sh -c 'col -bx | bat -l man -p'"
     export BAT_THEME="Dracula"
 fi
 

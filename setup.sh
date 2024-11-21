@@ -178,8 +178,8 @@ check_requirements() {
     fi
     
     # Check for required files and directories
-    local required_files=("40-libinput.conf" "setup.sh")
-    local required_dirs=("dotfiles" "Wallpapers" "dotfiles/.config/i3" "dotfiles/.config/rofi")
+    local required_files=("40-libinput.conf" "setup.sh" ".bashrc")
+    local required_dirs=("Wallpapers" ".config")
     
     for file in "${required_files[@]}"; do
         if [ ! -f "$file" ]; then

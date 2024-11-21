@@ -159,7 +159,7 @@ install_aur_package() {
         echo -e "${RED}yay is not installed. Cannot install AUR package.${NC}"
         return 1
     fi
-    
+
     echo -e "${YELLOW}Installing $package from AUR...${NC}"
     if ! yay -S --noconfirm "$package"; then
         echo -e "${RED}Failed to install $package${NC}"
@@ -180,18 +180,18 @@ check_requirements() {
         echo -e "${RED}Please run this script from the i3-wm directory${NC}"
         exit 1
     fi
-    
+
     # Check for required files and directories
     local required_files=("40-libinput.conf" "setup.sh" ".bashrc")
     local required_dirs=("Wallpapers" ".config")
-    
+
     for file in "${required_files[@]}"; do
         if [ ! -f "$file" ]; then
             echo -e "${RED}Required file '$file' not found!${NC}"
             exit 1
         fi
     done
-    
+
     for dir in "${required_dirs[@]}"; do
         if [ ! -d "$dir" ]; then
             echo -e "${RED}Required directory '$dir' not found!${NC}"
@@ -206,7 +206,7 @@ main() {
     check_not_root
     check_internet
     check_requirements
-    
+
     # Create timestamp for this installation
     local TIMESTAMP=$(date +%Y%m%d_%H%M%S)
     echo -e "${BLUE}Installation started at: $(date)${NC}"
@@ -214,20 +214,20 @@ main() {
     # Git configuration
     echo -e "${YELLOW}Do you want to configure Git with your username and email? (y/n)${NC}"
     read -r configure_git
-    
+
     if [[ "$configure_git" == "y" || "$configure_git" == "Y" ]]; then
         echo -e "${YELLOW}Please enter your GitHub username:${NC}"
         read -r github_username
         echo -e "${YELLOW}Please enter your GitHub email:${NC}"
         read -r github_email
-        
+
         git config --global user.name "$github_username"
         git config --global user.email "$github_email"
         echo -e "${GREEN}Git configured for user: $github_username${NC}"
     else
         echo -e "${YELLOW}Skipping Git configuration as per user choice.${NC}"
     fi
-    
+
     # Install yay if not present
     if ! command_exists yay; then
         echo -e "${YELLOW}Installing yay AUR helper...${NC}"
@@ -235,52 +235,52 @@ main() {
         (cd /tmp/yay-bin && makepkg -si --noconfirm) || handle_error "Failed to install yay"
         rm -rf /tmp/yay-bin
     fi
-    
+
     # System update and package installation
     echo -e "${YELLOW}Updating system and installing packages...${NC}"
     {
         # Update system first
         sudo pacman -Syu --noconfirm || handle_error "System update failed"
-        
+
         # Install packages by groups
         echo -e "${BLUE}Installing core packages...${NC}"
         sudo pacman -S --noconfirm --needed "${CORE_PACKAGES[@]}" || handle_error "Core packages installation failed"
-        
+
         echo -e "${BLUE}Installing archive tools...${NC}"
         sudo pacman -S --noconfirm --needed "${ARCHIVE_PACKAGES[@]}" || handle_error "Archive packages installation failed"
-        
+
         echo -e "${BLUE}Installing system packages...${NC}"
         sudo pacman -S --noconfirm --needed "${SYSTEM_PACKAGES[@]}" || handle_error "System packages installation failed"
-        
+
         echo -e "${BLUE}Installing file manager packages...${NC}"
         sudo pacman -S --noconfirm --needed "${FILE_MANAGER_PACKAGES[@]}" || handle_error "File manager packages installation failed"
-        
+
         echo -e "${BLUE}Installing UI packages...${NC}"
         sudo pacman -S --noconfirm --needed "${UI_PACKAGES[@]}" || handle_error "UI packages installation failed"
-        
+
         echo -e "${BLUE}Installing theme packages...${NC}"
         sudo pacman -S --noconfirm --needed "${THEME_PACKAGES[@]}" || handle_error "Theme packages installation failed"
     } &
     show_progress $!
-    
+
     # Set screen brightness with error handling
     echo -e "${YELLOW}Setting screen brightness to 3%...${NC}"
     if ! sudo brightnessctl set 3%; then
         echo -e "${YELLOW}Warning: Failed to set brightness, continuing anyway...${NC}"
     fi
-    
+
     # Enable services with error handling
     echo -e "${YELLOW}Enabling system services...${NC}"
     if ! sudo systemctl enable bluetooth; then
         echo -e "${YELLOW}Warning: Failed to enable bluetooth service, continuing anyway...${NC}"
     fi
-    
+
     echo -e "${YELLOW}Enabling ly display manager service...${NC}"
     if ! sudo systemctl enable ly.service; then
         echo -e "${RED}Failed to enable ly service.${NC}"
         exit 1
     fi
-    
+
     # Create directories
     echo -e "${YELLOW}Creating directory structure...${NC}"
     mkdir -p \
@@ -290,7 +290,7 @@ main() {
         ~/Music \
         ~/Videos \
         ~/Projects
-    
+
     # Copy configuration files
     echo -e "${YELLOW}Copying configuration files...${NC}"
     sudo mkdir -p /etc/X11/xorg.conf.d/
@@ -298,17 +298,17 @@ main() {
     cp .bashrc ~/ || handle_error "Failed to copy bash config"
     cp -r Wallpapers ~/Pictures/ || handle_error "Failed to copy wallpapers"
     cp -rb .config ~/ || handle_error "Failed to copy config files"
-    
+
     # Set permissions
     chmod +x ~/Pictures/Wallpapers/set_random_wallpaper.sh || handle_error "Failed to set script permissions"
-    
+
     # Clean up
     echo -e "${YELLOW}Cleaning up...${NC}"
     sudo pacman -Sc --noconfirm || handle_error "Failed to clean package cache"
-    
+
     # Remove bash_profile if it exists
     rm -f ~/.bash_profile
-    
+
     # Installation complete
     echo -e "${GREEN}╔═══════════════════════════════════════════╗${NC}"
     echo -e "${GREEN}║         Installation Complete!            ║${NC}"

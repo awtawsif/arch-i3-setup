@@ -15,7 +15,7 @@ set $codeeditor code
 set $texteditor mousepad
 
 # Font settings
-font pango: JetBrainsMono Nerd Font Propo 9
+font pango: JetBrainsMono Nerd Font Propo 6
 
 # Workspace and Window Layout
 workspace_layout tabbed

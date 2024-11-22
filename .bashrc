@@ -21,7 +21,7 @@ shopt -s no_empty_cmd_completion  # No empty command completion
 shopt -s extglob             # Extended pattern matching
 
 # ===== Visual Enhancements =====
-# Colors and formatting
+# Colors and formatting - simplified
 if [[ $TERM != "linux" && -x /usr/bin/tput ]]; then
     BOLD="$(tput bold)"
     RED="$(tput setaf 1)"
@@ -44,7 +44,7 @@ else
     RESET="\e[0m"
 fi
 
-# Beautiful minimal prompt with execution time
+# Efficient command timer
 timer_start() {
     timer=${timer:-$SECONDS}
 }
@@ -76,7 +76,7 @@ export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
 # ===== Modern Command Alternatives =====
-# Use modern alternatives if available
+# Use modern alternatives if available (keeping it minimal)
 if command -v exa &> /dev/null; then
     alias ls='exa --icons --group-directories-first'
     alias ll='exa -l --icons --group-directories-first --git'
@@ -91,44 +91,47 @@ if command -v bat &> /dev/null; then
     export BAT_THEME="Dracula"
 fi
 
-# ===== Smart Aliases =====
+# ===== Essential Aliases =====
 # Colorize commands when possible
-alias diff='diff --color=auto'
-alias ip='ip -color=auto'
 alias grep='grep --color=auto'
+alias ip='ip -color=auto'
+alias diff='diff --color=auto'
 
-# Smart directory navigation
+# Directory navigation
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
-alias .....='cd ../../../..'
 alias -- -='cd -'
 
-# Common operations with confirmation
+# Safe operations
 alias cp='cp -i'
 alias mv='mv -i'
 alias rm='rm -i'
 alias ln='ln -i'
 
-# Pacman shortcuts
-alias pacup='sudo pacman -Syu'
-alias pacin='sudo pacman -S'
-alias pacrem='sudo pacman -Rns'
-alias pacsearch='pacman -Ss'
-alias pacclean='sudo pacman -Sc'
-alias pacorphan='sudo pacman -Rns $(pacman -Qtdq)'
+# Pacman aliases (restored and enhanced)
+alias pacup='sudo pacman -Syu'                  # Sync and upgrade
+alias pacin='sudo pacman -S'                    # Install package
+alias pacins='sudo pacman -U'                   # Install local package
+alias pacrem='sudo pacman -Rns'                 # Remove package
+alias pacrep='pacman -Si'                       # Show remote package info
+alias pacreps='pacman -Ss'                      # Search remote packages
+alias pacloc='pacman -Qi'                       # Show local package info
+alias paclocs='pacman -Qs'                      # Search local packages
+alias paclo='pacman -Qdt'                       # List orphaned packages
+alias pacc='sudo pacman -Scc'                   # Clean cache
+alias paclf='pacman -Ql'                        # List package files
+alias pacexpl='pacman -D --asexplicit'          # Mark as explicit
+alias pacimpl='pacman -D --asdeps'              # Mark as dependency
+alias pacorph='sudo pacman -Rns $(pacman -Qtdq)'  # Remove orphans
 
-# Package information
-alias pkginfo='pacman -Qi'                      # Query installed package
-alias pkgfile='pacman -Fl'                      # List remote package files
-alias pkgcheck='pacman -Qk'                     # Check package files
-alias pkgdeps='pacman -Qii'                     # Show package dependencies
-
-# ===== Functions =====
+# ===== Essential Functions =====
 # Create and enter directory
-mkcd() { mkdir -p "$1" && cd "$1"; }
+mkcd() {
+    mkdir -p "$1" && cd "$1"
+}
 
-# Smart archive extractor
+# Smart archive extractor (simplified)
 extract() {
     if [ -f "$1" ]; then
         case "$1" in
@@ -151,36 +154,19 @@ extract() {
 }
 
 # ===== Shell Options =====
-# Better directory navigation
+# Essential directory navigation
 shopt -s autocd           # Change directory without cd
 shopt -s dirspell        # Correct directory spelling
 shopt -s cdspell         # Correct cd spelling
 shopt -s globstar        # Enable ** glob pattern
-shopt -s dotglob         # Include hidden files in globbing
-shopt -s nocaseglob      # Case-insensitive globbing
 
-# Bash completion settings
+# Basic completion
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
 # ===== Path Configuration =====
-# Clean PATH to avoid duplicates
-if [ -n "$PATH" ]; then
-    old_PATH=$PATH:
-    PATH=
-    while [ -n "$old_PATH" ]; do
-        x=${old_PATH%%:*}
-        case $PATH: in
-            *:"$x":*) ;;
-            *) PATH=$PATH:$x;;
-        esac
-        old_PATH=${old_PATH#*:}
-    done
-    PATH=${PATH#:}
-    unset old_PATH x
-fi
-
+# Keep it simple
 export PATH="$HOME/.local/bin:$PATH"
 
 # ===== Security =====
@@ -189,9 +175,3 @@ umask 077  # Set secure default permissions
 # ===== Performance =====
 # Disable flow control
 stty -ixon  # Enable Ctrl+S for forward search
-
-# Faster keyboard repeat rate (uncomment if needed)
-# xset r rate 200 40  # Delay and rate
-
-# Reduce disk writes
-export LESSHISTFILE=/dev/null

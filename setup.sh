@@ -67,6 +67,7 @@ UI_PACKAGES=(
 THEME_PACKAGES=(
     ttf-fonts-awesome
     ttf-jetbrains-mono-nerd
+    noto-fonts-emoji
     gnome-themes-standard
     papirus-icon-theme
 )

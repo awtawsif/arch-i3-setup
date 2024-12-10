@@ -32,7 +32,7 @@ alert_unit = "GB"
 alert = 10.0
 warning = 15.0
 format = " $icon $available.eng(w:5, prefix_space:true, p:Gi) "
-format_alt = " $icon $available.eng(w:5) / $total.eng(w:5) "
+format_alt = " $icon $available.eng(w:5, prefix_space:true, p:Gi) / $total.eng(w:5, prefix_space:true, p:Gi) "
 [[block.click]]
 button = "right"
 update = true

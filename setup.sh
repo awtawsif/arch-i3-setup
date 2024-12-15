@@ -62,6 +62,7 @@ UI_PACKAGES=(
     dunst
     rofi
     i3status-rust
+    tumbler
 )
 
 THEME_PACKAGES=(

@@ -36,7 +36,7 @@ ARCHIVE_PACKAGES=(
 )
 
 SYSTEM_PACKAGES=(
-    neofetch
+    fastfetch
     xss-lock
     bluez
     bluez-utils

@@ -17,6 +17,7 @@ critical_cpu = 90
 
 [[block]]
 block = "battery"
+full_threshold = 100
 driver = "upower"
 good = 75
 info = 0
@@ -40,8 +41,8 @@ update = true
 [[block]]
 block = "memory"
 format = " $icon $mem_used.eng(w:4, prefix_space:true, p:Mi) "
-warning_mem = 70
-critical_mem = 90
+warning_mem = 60
+critical_mem = 85
 
 [[block]]
 block = "sound"

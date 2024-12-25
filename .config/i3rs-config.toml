@@ -20,11 +20,12 @@ block = "battery"
 full_threshold = 100
 driver = "upower"
 good = 75
-info = 0
+info = 50
 
 [[block]]
 block = "net"
-format = " $icon {$ssid $signal_strength|Wired Connection} "
+format = " $icon {$ssid $signal_strength|Wired Connection}"
+format_alt = " ^icon_net_down $speed_down.eng(w:5) ^icon_net_up $speed_up.eng(w:5)"
 
 [[block]]
 block = "disk_space"
@@ -32,23 +33,23 @@ info_type = "available"
 alert_unit = "GB"
 alert = 10.0
 warning = 15.0
-format = " $icon $available.eng(w:5, prefix_space:true, p:Gi) "
-format_alt = " $icon $available.eng(w:5, prefix_space:true, p:Gi) / $total.eng(w:5, prefix_space:true, p:Gi) "
+format = " $icon $available.eng(w:5, prefix_space:true, p:Gi)"
 [[block.click]]
-button = "right"
+button = "left"
 update = true
 
 [[block]]
 block = "memory"
-format = " $icon $mem_used.eng(w:4, prefix_space:true, p:Mi) "
-warning_mem = 60
-critical_mem = 85
+format = " $icon $mem_used.eng(w:5, prefix_space:true, p:Mi)"
+warning_mem = 50
+critical_mem = 75
 
 [[block]]
 block = "sound"
 driver = "pulseaudio"
 show_volume_when_muted = true
-format = " $icon $volume "
+headphones_indicator = true
+format = " $icon $volume"
 step_width = 3
 
 [[block]]

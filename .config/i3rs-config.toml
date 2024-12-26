@@ -57,11 +57,11 @@ max_vol = 100
 [[block]]
 block = "time"
 interval = 60
-format = " $icon $timestamp.datetime(f:'%a %d/%m %R') "
+format = " $icon $timestamp.datetime(f:'%a %d/%m %R')"
 
 [[block]]
 block = "menu"
-text = "\uf011 "
+text = " \uf011"
 [[block.items]]
 display = " -&gt; Power Off &lt;-"
 cmd = "poweroff"

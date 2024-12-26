@@ -15,7 +15,13 @@ set $codeeditor code
 set $texteditor mousepad
 
 # Font settings
-font pango: JetBrainsMono Nerd Font Propo 6
+font pango: JetBrainsMono Nerd Font 6
+
+# Gaps configuration
+gaps inner 8
+gaps outer 2
+smart_gaps on
+smart_borders on
 
 # Workspace and Window Layout
 workspace_layout tabbed
@@ -26,12 +32,24 @@ hide_edge_borders smart_no_gaps
 for_window [all] title_window_icon padding 3px
 
 # Client Colors (Focused, Unfocused, etc.)
-client.focused          #1a73e8   #1e3a8a  #ffffff  #3b82f6  #1e3a8a
-client.focused_inactive #4b5563   #374151  #d1d5db  #6b7280  #374151
-client.unfocused        #4b5563   #1f2937  #9ca3af  #3f4552  #1f2937
-client.urgent           #dc2626   #991b1b  #ffffff  #f87171  #991b1b
-client.placeholder      #111827   #1f2937  #d1d5db  #111827  #1f2937
+client.focused          #88c0d0 #434c5e #eceff4 #8fbcbb #88c0d0
+client.focused_inactive #4c566a #434c5e #eceff4 #4c566a #4c566a
+client.unfocused        #2e3440 #2e3440 #888888 #292d2e #2e3440
+client.urgent           #bf616a #bf616a #eceff4 #900000 #bf616a
+client.placeholder      #000000 #0c0c0c #eceff4 #000000 #0c0c0c
 client.background       #e5e7eb
+
+# Better window management
+focus_follows_mouse no
+mouse_warping none
+force_display_urgency_hint 500 ms
+
+# Window rules
+for_window [class=".*"] border pixel 2
+for_window [class="^.*"] border pixel 2
+for_window [urgent=latest] focus
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="task_dialog"] floating enable
 
 # Scratchpad Configuration
 ## Move the currently focused window to the scratchpad
@@ -42,8 +60,18 @@ bindsym $mod+minus scratchpad show
 
 # i3bar Configuration
 bar {
-	font pango: JetBrainsMono Nerd Font Propo 9
-	status_command /usr/bin/i3status-rs /home/tawsif/.config/i3rs-config.toml
+    font pango: JetBrainsMono Nerd Font 9
+    status_command /usr/bin/i3status-rs $HOME/.config/i3rs-config.toml
+    strip_workspace_numbers yes
+    colors {
+        background #000000
+        statusline #eceff4
+        separator  #4c566a
+        focused_workspace  #88c0d0 #88c0d0 #2e3440
+        active_workspace   #4c566a #4c566a #eceff4
+        inactive_workspace #2e3440 #2e3440 #888888
+        urgent_workspace   #bf616a #bf616a #eceff4
+    }
 }
 
 # Include additional configuration files

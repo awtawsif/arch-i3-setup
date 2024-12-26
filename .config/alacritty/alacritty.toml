@@ -45,28 +45,28 @@ x = 0
 y = 0
 
 [colors.primary]
-background = "#1a1b26"
+background = "#1e1f2e"  # Slightly lighter background
 foreground = "#c0caf5"
 
 [colors.normal]
-black = "#15161e"
+black = "#1a1b26"       # Darker black for better contrast
 red = "#f7768e"
 green = "#9ece6a"
 yellow = "#e0af68"
 blue = "#7aa2f7"
 magenta = "#bb9af7"
 cyan = "#7dcfff"
-white = "#a9b1d6"
+white = "#c0caf5"       # Brighter white
 
 [colors.bright]
 black = "#414868"
-red = "#f7768e"
-green = "#9ece6a"
-yellow = "#e0af68"
-blue = "#7aa2f7"
+red = "#ff7a93"        # Brighter red
+green = "#b9f27c"      # Brighter green
+yellow = "#ff9e64"     # Brighter yellow
+blue = "#7da6ff"      # Brighter blue
 magenta = "#bb9af7"
 cyan = "#7dcfff"
-white = "#c0caf5"
+white = "#d5daf5"     # Much brighter white
 
 [[colors.indexed_colors]]
 index = 16

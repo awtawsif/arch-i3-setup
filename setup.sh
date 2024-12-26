@@ -14,7 +14,6 @@ CORE_PACKAGES=(
     exa
     bat
     base-devel
-    stow
     alacritty
     brightnessctl
     nano
@@ -57,7 +56,7 @@ FILE_MANAGER_PACKAGES=(
 )
 
 UI_PACKAGES=(
-    hsetroot
+    feh
     flameshot
     dunst
     rofi

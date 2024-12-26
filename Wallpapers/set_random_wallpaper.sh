@@ -7,4 +7,4 @@ WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
 RANDOM_WALLPAPER=$(find "$WALLPAPER_DIR" -type f | shuf -n 1)
 
 # Set the wallpaper using hsetroot
-hsetroot -fill "$RANDOM_WALLPAPER"
+feh --no-fehbg --bg-fill "$RANDOM_WALLPAPER"

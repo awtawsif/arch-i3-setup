@@ -237,6 +237,46 @@ main() {
         rm -rf /tmp/yay-bin
     fi
 
+    # Install AUR packages
+    AUR_PACKAGES=(
+        i3lock-color
+        # Add more AUR packages here
+    )
+
+    echo -e "${YELLOW}Installing AUR packages...${NC}"
+    for package in "${AUR_PACKAGES[@]}"; do
+        install_aur_package "$package" || handle_error "Failed to install AUR package: $package"
+    done
+
+    # Browser selection and installation
+    echo -e "${YELLOW}Select a browser to install:${NC}"
+    echo "1) Firefox"
+    echo "2) Chromium"
+    echo "3) Brave (AUR)"
+    echo "4) Skip"
+    read -rp "Enter your choice [1-4]: " browser_choice
+
+    case $browser_choice in
+        1)
+            echo -e "${YELLOW}Installing Firefox...${NC}"
+            sudo pacman -S --noconfirm firefox || handle_error "Failed to install Firefox"
+            ;;
+        2)
+            echo -e "${YELLOW}Installing Chromium...${NC}"
+            sudo pacman -S --noconfirm chromium || handle_error "Failed to install Chromium"
+            ;;
+        3)
+            echo -e "${YELLOW}Installing Brave from AUR...${NC}"
+            install_aur_package brave-bin || handle_error "Failed to install Brave"
+            ;;
+        4)
+            echo -e "${YELLOW}Skipping browser installation.${NC}"
+            ;;
+        *)
+            echo -e "${RED}Invalid choice. Skipping browser installation.${NC}"
+            ;;
+    esac
+
     # System update and package installation
     echo -e "${YELLOW}Updating system and installing packages...${NC}"
     {

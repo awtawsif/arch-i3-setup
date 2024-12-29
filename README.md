@@ -8,11 +8,12 @@ This script is perfect for:
 - Developers and power users
 - Anyone wanting a streamlined i3 window manager setup
 
-## 🚀 What This Script Does
+## What This Script Does
 
-Transforms a minimal Arch Linux installation into a fully configured development and productivity environment with i3 window manager, automating:
-- System package installation
-- Configuration file deployment
+Transforms a minimal Arch Linux installation into a fully configured development and productivity environment with i3 window manager, featuring:
+- Automated system package installation
+- Automatic backup and restore of configurations
+- Smart package group management
 - Development environment setup
 - Desktop environment customization
 
@@ -23,25 +24,34 @@ Transforms a minimal Arch Linux installation into a fully configured development
 - Working internet connection
 - Non-root user with sudo privileges
 
-## 📦 What Gets Installed
+## 📦 Package Groups
 
-### Core Utilities
-- **System Monitoring**: htop
-- **File Management**: exa, thunar
-- **Text Editing**: nano
-- **Terminal**: alacritty
-- **Window Management**: i3-wm, i3blocks
+The script organizes packages into logical groups:
+- **Core**: Essential system components
+- **Archive**: File compression tools
+- **System**: System utilities and services
+- **File Manager**: File management tools
+- **UI**: User interface components
+- **Theme**: Fonts and visual customization
 
-### Development Tools
-- Base development tools
-- Bash completion
-- Git configuration support
+## 🛡️ Safety Features
 
-### Aesthetic & Usability
-- Papirus icon theme
-- JetBrains Mono Nerd Font
-- Rofi application launcher
-- Dunst notification daemon
+### Automatic Backup
+- Creates timestamped backups before installation
+- Backs up existing configurations to `~/.config_backups/`
+- Automatic rollback on failure
+
+### Error Handling
+- Comprehensive error detection
+- Automatic configuration restoration on failure
+- Detailed logging of all operations
+- Interrupt handling with safe cleanup
+
+### Safety Checks
+- Non-root execution requirement
+- Internet connectivity verification
+- Package verification after installation
+- Configuration validation
 
 ## 🛠 Pre-Installation Checklist
 
@@ -57,56 +67,37 @@ Transforms a minimal Arch Linux installation into a fully configured development
 ```bash
 ./setup.sh
 ```
-- Performs all checks
-- Prompts for Git configuration
-- Installs all packages
-- Configures system
 
 ### Force Mode
 ```bash
 ./setup.sh --force
 ```
-- Skips prerequisite checks
-- Useful for experienced users
-- Use with caution
+Skips prerequisite checks (use with caution)
 
-## 🤔 What Happens During Installation?
+## 📋 Installation Process
 
-1. Internet connectivity check
-2. Script prerequisite verification
-3. Optional Git configuration
-4. AUR helper (yay) installation
-5. System package updates
-6. Package group installations
-7. System service enablement
-8. User directory creation
-9. Configuration file deployment
-10. System cleanup
-
-## 🛡️ Safety & Customization
-
-### Customization Options
-- Edit package arrays in script
-- Add/remove packages as needed
-- Modify configuration file copying
-
-### Safety Features
-- Comprehensive error handling
-- Detailed logging
-- Non-root execution requirement
-- Internet connectivity verification
+1. Safety checks and backups
+2. Git configuration (optional)
+3. AUR helper (yay) installation
+4. Package installations by group
+5. Browser installation (user choice)
+6. System service configuration
+7. Directory structure setup
+8. Configuration deployment
+9. System cleanup
 
 ## 🔍 Troubleshooting
+
+### Installation Log
+- Located at `~/setup_[timestamp].log`
+- Contains detailed operation information
+- Useful for debugging issues
 
 ### Common Issues
 - Ensure sudo privileges
 - Check internet connection
-- Verify Arch Linux base system
-- Review installation log
-
-### Log File
-- Located at `~/setup_[timestamp].log`
-- Contains detailed installation information
+- Verify file permissions
+- Review backup directory if restore needed
 
 ## 📋 Post-Installation Steps
 

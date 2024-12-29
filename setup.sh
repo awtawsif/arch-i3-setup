@@ -8,64 +8,18 @@ BLUE="\033[0;34m"
 CYAN="\033[0;36m"
 NC="\033[0m" # No Color
 
-# Define package groups
-CORE_PACKAGES=(
-    htop
-    exa
-    bat
-    alacritty
-    brightnessctl
-    nano
-    nano-syntax-highlighting
-    mousepad
-    bash-completion
-    i3-wm
-    i3blocks
-)
+# Define backup directory
+BACKUP_DIR="$HOME/.config_backups/$(date +%Y%m%d_%H%M%S)"
 
-ARCHIVE_PACKAGES=(
-    unrar
-    zip
-    unzip
-    xarchiver
-)
-
-SYSTEM_PACKAGES=(
-    fastfetch
-    xss-lock
-    bluez
-    bluez-utils
-    blueman
-    lxappearance
-    man-db
-    ly
-    network-manager-applet
-    upower
-)
-
-FILE_MANAGER_PACKAGES=(
-    thunar
-    thunar-volman
-    thunar-archive-plugin
-    gvfs
-    gvfs-mtp
-)
-
-UI_PACKAGES=(
-    feh
-    flameshot
-    dunst
-    rofi
-    i3status-rust
-    tumbler
-)
-
-THEME_PACKAGES=(
-    ttf-font-awesome
-    ttf-jetbrains-mono-nerd
-    noto-fonts-emoji
-    gnome-themes-standard
-    papirus-icon-theme
+# Improve package grouping with descriptions and dependencies
+declare -A PACKAGE_GROUPS
+PACKAGE_GROUPS=(
+    ["core"]="Essential system components|htop exa bat alacritty brightnessctl nano nano-syntax-highlighting mousepad bash-completion i3-wm i3blocks"
+    ["archive"]="Archive management tools|unrar zip unzip xarchiver"
+    ["system"]="System utilities and services|fastfetch xss-lock bluez bluez-utils blueman lxappearance man-db ly network-manager-applet upower"
+    ["file_manager"]="File management tools|thunar thunar-volman thunar-archive-plugin gvfs gvfs-mtp"
+    ["ui"]="User interface components|feh flameshot dunst rofi i3status-rust tumbler"
+    ["theme"]="Theming and fonts|ttf-font-awesome ttf-jetbrains-mono-nerd noto-fonts-emoji gnome-themes-standard papirus-icon-theme"
 )
 
 # Parse command line arguments
@@ -197,12 +151,60 @@ check_requirements() {
     done
 }
 
+# Add new functions for improved functionality
+backup_configs() {
+    echo -e "${YELLOW}Creating backup of existing configs...${NC}"
+    mkdir -p "$BACKUP_DIR"
+    if [ -d "$HOME/.config" ]; then
+        cp -r "$HOME/.config" "$BACKUP_DIR/"
+    fi
+    if [ -f "$HOME/.bashrc" ]; then
+        cp "$HOME/.bashrc" "$BACKUP_DIR/"
+    fi
+}
+
+restore_backup() {
+    if [ -d "$BACKUP_DIR" ]; then
+        echo -e "${YELLOW}Restoring configurations from backup...${NC}"
+        cp -r "$BACKUP_DIR/.config" "$HOME/" 2>/dev/null
+        cp "$BACKUP_DIR/.bashrc" "$HOME/" 2>/dev/null
+    fi
+}
+
+verify_packages() {
+    local group=$1
+    local packages=(${PACKAGE_GROUPS[$group]#*|})
+    
+    echo -e "${YELLOW}Verifying packages for group '$group'...${NC}"
+    for pkg in "${packages[@]}"; do
+        if ! pacman -Qi "$pkg" >/dev/null 2>&1; then
+            return 1
+        fi
+    done
+    return 0
+}
+
+install_package_group() {
+    local group=$1
+    local description=${PACKAGE_GROUPS[$group]%%|*}
+    local packages=(${PACKAGE_GROUPS[$group]#*|})
+    
+    echo -e "${BLUE}Installing $group packages ($description)...${NC}"
+    if ! sudo pacman -S --noconfirm --needed "${packages[@]}"; then
+        handle_error "Failed to install $group packages"
+        return 1
+    fi
+    return 0
+}
+
 # Main installation function
 main() {
-    # Initial checks
     check_not_root
     check_internet
     check_requirements
+
+    # Create backup of existing configs
+    backup_configs
 
     # Create timestamp for this installation
     local TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -272,6 +274,25 @@ main() {
             echo -e "${RED}Invalid choice. Skipping browser installation.${NC}"
             ;;
     esac
+
+    # Install packages using new group structure
+    for group in "${!PACKAGE_GROUPS[@]}"; do
+        install_package_group "$group" || {
+            echo -e "${RED}Failed to install $group packages. Rolling back...${NC}"
+            restore_backup
+            exit 1
+        }
+    done
+
+    # Verify installations
+    echo -e "${YELLOW}Verifying installations...${NC}"
+    for group in "${!PACKAGE_GROUPS[@]}"; do
+        verify_packages "$group" || {
+            echo -e "${RED}Package verification failed for group $group${NC}"
+            restore_backup
+            exit 1
+        }
+    done
 
     # System update and package installation
     echo -e "${YELLOW}Updating system and installing packages...${NC}"
@@ -346,6 +367,14 @@ main() {
     # Remove bash_profile if it exists
     rm -f ~/.bash_profile
 
+    # Add configuration validation
+    echo -e "${YELLOW}Validating configurations...${NC}"
+    if ! i3 -C; then
+        echo -e "${RED}i3 configuration validation failed. Rolling back...${NC}"
+        restore_backup
+        exit 1
+    fi
+
     # Installation complete
     echo -e "${GREEN}╔═══════════════════════════════════════════╗${NC}"
     echo -e "${GREEN}║         Installation Complete!            ║${NC}"
@@ -354,5 +383,8 @@ main() {
     echo -e "${CYAN}Please reboot your system to apply all changes.${NC}"
 }
 
-# Run main function
+# Add cleanup trap
+trap 'echo -e "${RED}Installation interrupted. Rolling back...${NC}"; restore_backup; exit 1' INT TERM
+
+# Run main function with arguments
 main "$@"

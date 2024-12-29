@@ -31,7 +31,6 @@ Transforms a minimal Arch Linux installation into a fully configured development
 - **Text Editing**: nano
 - **Terminal**: alacritty
 - **Window Management**: i3-wm, i3blocks
-- **Display Server**: Xorg
 
 ### Development Tools
 - Base development tools
@@ -46,7 +45,7 @@ Transforms a minimal Arch Linux installation into a fully configured development
 
 ## 🛠 Pre-Installation Checklist
 
-1. Complete minimal Arch Linux installation
+1. Complete Xorg Arch Linux installation
 2. Ensure sudo access for current user
 3. Connect to internet
 4. Clone this repository

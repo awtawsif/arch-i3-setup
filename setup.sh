@@ -13,7 +13,6 @@ CORE_PACKAGES=(
     htop
     exa
     bat
-    base-devel
     alacritty
     brightnessctl
     nano
@@ -22,9 +21,6 @@ CORE_PACKAGES=(
     bash-completion
     i3-wm
     i3blocks
-    xorg-xinit
-    xorg-xauth
-    xorg-server
 )
 
 ARCHIVE_PACKAGES=(
@@ -65,7 +61,7 @@ UI_PACKAGES=(
 )
 
 THEME_PACKAGES=(
-    ttf-fonts-awesome
+    ttf-font-awesome
     ttf-jetbrains-mono-nerd
     noto-fonts-emoji
     gnome-themes-standard

@@ -202,29 +202,116 @@ main() {
     check_not_root
     check_internet
     check_requirements
-
-    # Create backup of existing configs
     backup_configs
 
-    # Create timestamp for this installation
-    local TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-    echo -e "${BLUE}Installation started at: $(date)${NC}"
+    echo -e "${CYAN}"
+    echo "╔═══════════════════════════════════════════╗"
+    echo "║         System Setup Installation         ║"
+    echo "╚═══════════════════════════════════════════╝"
+    echo -e "${NC}"
 
-    # Git configuration
+    # Group all user interactions at the start
+    echo -e "${YELLOW}Please configure your installation preferences:${NC}"
+    echo "----------------------------------------"
+
+    # 1. Terminal Selection
+    echo -e "\n${YELLOW}Select your preferred terminal emulator:${NC}"
+    echo "1) Alacritty (Default)"
+    echo "2) Kitty"
+    echo "3) URxvt"
+    echo "4) st"
+    read -rp "Enter your choice [1-4]: " terminal_choice
+
+    # 2. Git Configuration
     echo -e "${YELLOW}Do you want to configure Git with your username and email? (y/n)${NC}"
     read -r configure_git
-
     if [[ "$configure_git" == "y" || "$configure_git" == "Y" ]]; then
         echo -e "${YELLOW}Please enter your GitHub username:${NC}"
         read -r github_username
         echo -e "${YELLOW}Please enter your GitHub email:${NC}"
         read -r github_email
+    fi
 
+    # 3. Browser Selection
+    echo -e "\n${YELLOW}Select a browser to install:${NC}"
+    echo "1) Firefox"
+    echo "2) Chromium"
+    echo "3) Brave (AUR)"
+    echo "4) Skip"
+    read -rp "Enter your choice [1-4]: " browser_choice
+
+    # 4. Development Environment
+    echo -e "\n${YELLOW}Select development tools to install:${NC}"
+    echo "[Enter space-separated numbers, e.g., '1 3 4']"
+    echo "1) Python Development"
+    echo "2) Node.js Development"
+    echo "3) Go Development"
+    echo "4) Rust Development"
+    echo "5) C/C++ Development"
+    echo "6) None"
+    read -rp "Enter your choices: " -a dev_choices
+
+    # 6. Extra Applications
+    echo -e "\n${YELLOW}Select additional applications to install:${NC}"
+    echo "[Enter space-separated numbers, e.g., '1 3 4']"
+    echo "1) VLC Media Player"
+    echo "2) LibreOffice"
+    echo "3) GIMP Image Editor"
+    echo "4) Visual Studio Code"
+    echo "5) Thunderbird Email"
+    echo "6) Telegram Desktop"
+    echo "7) Discord"
+    echo "8) None"
+    read -rp "Enter your choices: " -a app_choices
+
+    echo -e "\n${GREEN}Thank you! The installation will now proceed automatically.${NC}"
+    echo -e "${BLUE}You can leave the terminal running. We'll notify you when it's done.${NC}\n"
+
+    # Create arrays for package selection based on user choices
+    declare -A selected_packages
+    
+    # Process terminal selection
+    case $terminal_choice in
+        1) selected_packages["terminal"]="alacritty";;
+        2) selected_packages["terminal"]="kitty";;
+        3) selected_packages["terminal"]="rxvt-unicode";;
+        4) selected_packages["terminal"]="st";;
+    esac
+
+    # Process development tools
+    for choice in "${dev_choices[@]}"; do
+        case $choice in
+            1) selected_packages["python"]="python python-pip python-virtualenv";;
+            2) selected_packages["nodejs"]="nodejs npm";;
+            3) selected_packages["golang"]="go";;
+            4) selected_packages["rust"]="rust rust-analyzer";;
+            5) selected_packages["cpp"]="base-devel gdb cmake";;
+        esac
+    done
+
+    # Process extra applications
+    for choice in "${app_choices[@]}"; do
+        case $choice in
+            1) selected_packages["media"]="vlc";;
+            2) selected_packages["office"]="libreoffice-fresh";;
+            3) selected_packages["graphics"]="gimp";;
+            4) selected_packages["editor"]="visual-studio-code-bin";;
+            5) selected_packages["email"]="thunderbird";;
+            6) selected_packages["telegram"]="telegram-desktop";;
+            7) selected_packages["discord"]="discord";;
+        esac
+    done
+
+    # Create timestamp for this installation
+    local TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+    echo -e "${BLUE}Installation started at: $(date)${NC}"
+    echo -e "${BLUE}Logging the installation process to $LOGFILE${NC}"
+
+    # Process Git configuration if selected
+    if [[ "$configure_git" == "y" || "$configure_git" == "Y" ]]; then
         git config --global user.name "$github_username"
         git config --global user.email "$github_email"
         echo -e "${GREEN}Git configured for user: $github_username${NC}"
-    else
-        echo -e "${YELLOW}Skipping Git configuration as per user choice.${NC}"
     fi
 
     # Install yay if not present
@@ -235,25 +322,7 @@ main() {
         rm -rf /tmp/yay-bin
     fi
 
-    # Install AUR packages
-    AUR_PACKAGES=(
-        i3lock-color
-        # Add more AUR packages here
-    )
-
-    echo -e "${YELLOW}Installing AUR packages...${NC}"
-    for package in "${AUR_PACKAGES[@]}"; do
-        install_aur_package "$package" || handle_error "Failed to install AUR package: $package"
-    done
-
-    # Browser selection and installation
-    echo -e "${YELLOW}Select a browser to install:${NC}"
-    echo "1) Firefox"
-    echo "2) Chromium"
-    echo "3) Brave (AUR)"
-    echo "4) Skip"
-    read -rp "Enter your choice [1-4]: " browser_choice
-
+    # Process browser installation based on earlier selection
     case $browser_choice in
         1)
             echo -e "${YELLOW}Installing Firefox...${NC}"
@@ -274,6 +343,17 @@ main() {
             echo -e "${RED}Invalid choice. Skipping browser installation.${NC}"
             ;;
     esac
+
+    # Install AUR packages
+    AUR_PACKAGES=(
+        i3lock-color
+        # Add more AUR packages here
+    )
+
+    echo -e "${YELLOW}Installing AUR packages...${NC}"
+    for package in "${AUR_PACKAGES[@]}"; do
+        install_aur_package "$package" || handle_error "Failed to install AUR package: $package"
+    done
 
     # Install packages using new group structure
     for group in "${!PACKAGE_GROUPS[@]}"; do
@@ -341,7 +421,7 @@ main() {
 
     # Create directories
     echo -e "${YELLOW}Creating directory structure...${NC}"
-    mkdir -p \
+    mkdir --p \
         ~/Documents \
         ~/Downloads \
         ~/Pictures \

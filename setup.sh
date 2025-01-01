@@ -323,8 +323,11 @@ main() {
     # Install yay if not present
     if ! command_exists yay; then
         echo -e "${YELLOW}Installing yay AUR helper...${NC}"
-        git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin || handle_error "Failed to clone yay"
-        (cd /tmp/yay-bin && makepkg -si --noconfirm) || handle_error "Failed to install yay"
+        cd /tmp || handle_error "Failed to change to /tmp directory"
+        sudo -u $USER git clone https://aur.archlinux.org/yay-bin.git || handle_error "Failed to clone yay"
+        cd yay-bin || handle_error "Failed to enter yay-bin directory"
+        sudo -u $USER makepkg -si --noconfirm || handle_error "Failed to install yay"
+        cd - >/dev/null || handle_error "Failed to return to previous directory"
         rm -rf /tmp/yay-bin
     fi
 

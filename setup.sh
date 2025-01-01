@@ -112,7 +112,7 @@ install_aur_package() {
     fi
 
     echo -e "${YELLOW}Installing $package from AUR...${NC}"
-    if ! yay -S --noconfirm "$package"; then
+    if ! yay -S --noconfirm --needed "$package"; then
         echo -e "${RED}Failed to install $package${NC}"
         return 1
     fi
@@ -203,6 +203,12 @@ main() {
     check_internet
     check_requirements
     backup_configs
+
+    # Request sudo password upfront and maintain timestamp
+    echo -e "${YELLOW}Please enter sudo password to proceed with installation${NC}"
+    sudo -v
+    # Keep sudo timestamp fresh in background
+    while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
     echo -e "${CYAN}"
     echo "╔═══════════════════════════════════════════╗"
@@ -326,11 +332,11 @@ main() {
     case $browser_choice in
         1)
             echo -e "${YELLOW}Installing Firefox...${NC}"
-            sudo pacman -S --noconfirm firefox || handle_error "Failed to install Firefox"
+            sudo pacman -S --noconfirm --needed firefox || handle_error "Failed to install Firefox"
             ;;
         2)
             echo -e "${YELLOW}Installing Chromium...${NC}"
-            sudo pacman -S --noconfirm chromium || handle_error "Failed to install Chromium"
+            sudo pacman -S --noconfirm --needed chromium || handle_error "Failed to install Chromium"
             ;;
         3)
             echo -e "${YELLOW}Installing Brave from AUR...${NC}"
@@ -343,6 +349,34 @@ main() {
             echo -e "${RED}Invalid choice. Skipping browser installation.${NC}"
             ;;
     esac
+
+    # Process terminal installation
+    echo -e "${YELLOW}Installing selected terminal...${NC}"
+    if [[ -n "${selected_packages[terminal]}" ]]; then
+        sudo pacman -S --noconfirm --needed ${selected_packages[terminal]} || handle_error "Failed to install terminal"
+    fi
+
+    # Process development tools installation
+    echo -e "${YELLOW}Installing development tools...${NC}"
+    for tool in "python" "nodejs" "golang" "rust" "cpp"; do
+        if [[ -n "${selected_packages[$tool]}" ]]; then
+            echo -e "${BLUE}Installing $tool development tools...${NC}"
+            sudo pacman -S --noconfirm --needed ${selected_packages[$tool]} || handle_error "Failed to install $tool tools"
+        fi
+    done
+
+    # Process extra applications installation
+    echo -e "${YELLOW}Installing additional applications...${NC}"
+    for app in "media" "office" "graphics" "email" "telegram" "discord"; do
+        if [[ -n "${selected_packages[$app]}" ]]; then
+            echo -e "${BLUE}Installing ${app}...${NC}"
+            if [[ "$app" == "editor" ]]; then
+                install_aur_package "${selected_packages[$app]}" || handle_error "Failed to install ${app}"
+            else
+                sudo pacman -S --noconfirm --needed ${selected_packages[$app]} || handle_error "Failed to install ${app}"
+            fi
+        fi
+    done
 
     # Install AUR packages
     AUR_PACKAGES=(
@@ -378,7 +412,7 @@ main() {
     echo -e "${YELLOW}Updating system and installing packages...${NC}"
     {
         # Update system first
-        sudo pacman -Syu --noconfirm || handle_error "System update failed"
+        sudo pacman -Syu --noconfirm --needed || handle_error "System update failed"
 
         # Install packages by groups
         echo -e "${BLUE}Installing core packages...${NC}"

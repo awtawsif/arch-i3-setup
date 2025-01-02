@@ -21,59 +21,40 @@ PACKAGES=(
     gnome-themes-standard papirus-icon-theme
 )
 
-AUR_PACKAGES=(i3lock-color)
-
-FORCE_MODE=false
-[[ "$1" == "--force" ]] && FORCE_MODE=true
-
 LOGFILE=~/setup_$(date +%Y%m%d_%H%M%S).log
 exec > >(tee -a "$LOGFILE") 2>&1
+
+# Add sudo credential caching
+cache_sudo_credentials() {
+    echo -e "${YELLOW}Caching sudo credentials...${NC}"
+    sudo -v
+    while true; do
+        sudo -n true
+        sleep 60
+        kill -0 "$$" || exit
+    done 2>/dev/null &
+}
 
 # Simplified functions
 check_system() {
     [[ "$(id -u)" == "0" ]] && { echo -e "${RED}Don't run as root${NC}"; exit 1; }
+    cache_sudo_credentials || { echo -e "${RED}Failed to cache sudo credentials${NC}"; exit 1; }
     ping -c 1 8.8.8.8 >/dev/null 2>&1 || { echo -e "${RED}No internet connection${NC}"; exit 1; }
-    [[ "$FORCE_MODE" != true ]] && {
-        [[ ! -f "./setup.sh" ]] && { echo -e "${RED}Run from correct directory${NC}"; exit 1; }
-        for item in "40-libinput.conf" ".bashrc" "Wallpapers" ".config"; do
-            [[ ! -e "$item" ]] && { echo -e "${RED}Missing: $item${NC}"; exit 1; }
-        done
-    }
-}
-
-# Add loading indicator function
-show_spinner() {
-    local pid=$1
-    local delay=0.1
-    local chars="-\|/"
-    while ps -p $pid > /dev/null; do
-        for char in $chars; do
-            echo -en "\r$2 $char" 
-            sleep $delay
-        done
+    [[ ! -f "./setup.sh" ]] && { echo -e "${RED}Run from correct directory${NC}"; exit 1; }
+    for item in "40-libinput.conf" ".bashrc" "Wallpapers" ".config"; do
+        [[ ! -e "$item" ]] && { echo -e "${RED}Missing: $item${NC}"; exit 1; }
     done
-    echo -en "\r"
 }
 
 install_packages() {
-    echo -e "${YELLOW}Updating system...${NC}"
-    sudo pacman -Syu --noconfirm 2>&1 | tee /dev/tty >> "$LOGFILE" || return 1
+    sudo pacman -Syu --noconfirm || return 1
+    sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" || return 1
     
-    echo -e "${YELLOW}Installing packages...${NC}"
-    sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" 2>&1 | tee /dev/tty >> "$LOGFILE" || return 1
-    
-    if ! command -v yay; then
-        echo -e "${YELLOW}Installing yay...${NC}"
-        git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin &
-        show_spinner $! "Cloning yay"
-        (cd /tmp/yay-bin && makepkg -si --noconfirm) 2>&1 | tee /dev/tty >> "$LOGFILE"
+    command -v yay || {
+        git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
+        (cd /tmp/yay-bin && makepkg -si --noconfirm)
         rm -rf /tmp/yay-bin
-    fi
-    
-    for pkg in "${AUR_PACKAGES[@]}"; do
-        echo -e "${YELLOW}Installing ${pkg}...${NC}"
-        yay -S --noconfirm "$pkg" 2>&1 | tee /dev/tty >> "$LOGFILE"
-    done
+    }
 }
 
 setup_git() {
@@ -113,7 +94,9 @@ main() {
     mkdir -p ~/Documents ~/Downloads ~/Pictures ~/Music ~/Videos ~/Projects
     sudo mkdir -p /etc/X11/xorg.conf.d/
     sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/
-    cp -r {.bashrc,Wallpapers,".config"} ~/
+    cp .bashrc ~/
+    cp -r .config ~/
+    cp -r Wallpapers ~/Pictures/
     chmod +x ~/Pictures/Wallpapers/set_random_wallpaper.sh
     rm -f ~/.bash_profile
     

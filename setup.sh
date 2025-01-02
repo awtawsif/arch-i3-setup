@@ -77,6 +77,61 @@ check_internet() {
     echo -e "${GREEN}Internet connection verified.${NC}"
 }
 
+check_disk_space() {
+    local required_space=5000000  # 5GB in KB
+    local available_space=$(df -k "$HOME" | awk 'NR==2 {print $4}')
+    
+    echo -e "${YELLOW}Checking available disk space...${NC}"
+    if [ "$available_space" -lt "$required_space" ]; then
+        echo -e "${RED}Error: Insufficient disk space. Need at least 5GB free.${NC}"
+        exit 1
+    fi
+    echo -e "${GREEN}Sufficient disk space available.${NC}"
+}
+
+check_package_conflicts() {
+    local packages=("$@")
+    echo -e "${YELLOW}Checking for package conflicts...${NC}"
+    
+    if ! pacman -Sddp "${packages[@]}" >/dev/null 2>&1; then
+        echo -e "${RED}Detected package conflicts. Please resolve conflicts first.${NC}"
+        return 1
+    fi
+    return 0
+}
+
+validate_user_input() {
+    local input=$1
+    local max_value=$2
+    
+    if ! [[ "$input" =~ ^[0-9]+$ ]] || [ "$input" -lt 1 ] || [ "$input" -gt "$max_value" ]; then
+        echo -e "${RED}Invalid input: Please enter a number between 1 and $max_value${NC}"
+        return 1
+    fi
+    return 0
+}
+
+check_network_stability() {
+    echo -e "${YELLOW}Testing network stability...${NC}"
+    local failed_count=0
+    
+    for i in {1..3}; do
+        if ! ping -c 1 -W 2 archlinux.org >/dev/null 2>&1; then
+            ((failed_count++))
+        fi
+        sleep 1
+    done
+    
+    if [ "$failed_count" -gt 1 ]; then
+        echo -e "${RED}Warning: Unstable network connection detected${NC}"
+        echo -e "${YELLOW}This might cause installation failures. Continue? (y/n)${NC}"
+        read -r response
+        if [[ ! "$response" =~ ^[Yy]$ ]]; then
+            exit 1
+        fi
+    fi
+}
+
 # Function to handle errors
 handle_error() {
     local exit_code=$?
@@ -197,12 +252,38 @@ install_package_group() {
     return 0
 }
 
+improve_backup_handling() {
+    # Check if backup already exists
+    if [ -d "$BACKUP_DIR" ]; then
+        echo -e "${YELLOW}Previous backup detected at $BACKUP_DIR${NC}"
+        echo -e "${YELLOW}Do you want to create a new backup? (y/n)${NC}"
+        read -r response
+        if [[ "$response" =~ ^[Yy]$ ]]; then
+            BACKUP_DIR="${BACKUP_DIR}_new"
+            backup_configs
+        fi
+    else
+        backup_configs
+    fi
+
+    # Verify backup integrity
+    if [ -d "$BACKUP_DIR" ]; then
+        echo -e "${YELLOW}Verifying backup integrity...${NC}"
+        if ! find "$BACKUP_DIR" -type f -exec md5sum {} + > "$BACKUP_DIR/checksums.md5"; then
+            echo -e "${RED}Failed to create backup checksums${NC}"
+            exit 1
+        fi
+    fi
+}
+
 # Main installation function
 main() {
     check_not_root
     check_internet
+    check_disk_space
+    check_network_stability
     check_requirements
-    backup_configs
+    improve_backup_handling
 
     # Request sudo password upfront and maintain timestamp
     echo -e "${YELLOW}Please enter sudo password to proceed with installation${NC}"
@@ -226,7 +307,12 @@ main() {
     echo "2) Kitty"
     echo "3) URxvt"
     echo "4) st"
-    read -rp "Enter your choice [1-4]: " terminal_choice
+    while true; do
+        read -rp "Enter your choice [1-4]: " terminal_choice
+        if validate_user_input "$terminal_choice" 4; then
+            break
+        fi
+    done
 
     # 2. Git Configuration
     echo -e "${YELLOW}Do you want to configure Git with your username and email? (y/n)${NC}"
@@ -244,7 +330,12 @@ main() {
     echo "2) Chromium"
     echo "3) Brave (AUR)"
     echo "4) Skip"
-    read -rp "Enter your choice [1-4]: " browser_choice
+    while true; do
+        read -rp "Enter your choice [1-4]: " browser_choice
+        if validate_user_input "$browser_choice" 4; then
+            break
+        fi
+    done
 
     # 4. Development Environment
     echo -e "\n${YELLOW}Select development tools to install:${NC}"
@@ -379,17 +470,6 @@ main() {
                 sudo pacman -S --noconfirm --needed ${selected_packages[$app]} || handle_error "Failed to install ${app}"
             fi
         fi
-    done
-
-    # Install AUR packages
-    AUR_PACKAGES=(
-        i3lock-color
-        # Add more AUR packages here
-    )
-
-    echo -e "${YELLOW}Installing AUR packages...${NC}"
-    for package in "${AUR_PACKAGES[@]}"; do
-        install_aur_package "$package" || handle_error "Failed to install AUR package: $package"
     done
 
     # Install packages using new group structure

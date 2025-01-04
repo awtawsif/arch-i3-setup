@@ -69,6 +69,14 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 
+# Default applications
+export TERMINAL="alacritty"
+export LAUNCHER="rofi -show drun"
+export FILE_MANAGER="thunar"
+export BROWSER="firefox"
+export CODE_EDITOR="code"
+export TEXT_EDITOR="mousepad"
+
 # Essential environment settings
 export EDITOR="nano"
 export TERM="xterm-256color"

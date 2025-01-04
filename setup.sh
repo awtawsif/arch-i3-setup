@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# Color definitions
+# Color definitions - simplified and more reliable
+GREEN="\033[0;32m"
+RED="\033[0;31m"
+YELLOW="\033[0;33m"
+BLUE="\033[0;34m"
+CYAN="\033[0;36m"
 NC="\033[0m"
-for color in GREEN RED YELLOW BLUE CYAN; do
-    declare "$color=\033[0;3$(([GREEN]=2,[RED]=1,[YELLOW]=3,[BLUE]=4,[CYAN]=6)[$color])m"
-done
 
 # Consolidated package groups
 PACKAGES=(

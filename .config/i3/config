@@ -6,13 +6,8 @@ set $mod Mod1
 # Set a Wallpaper
 exec_always --no-startup-id ~/Pictures/Wallpapers/set_random_wallpaper.sh
 
-# Applications
-set $terminal alacritty
-set $launcher "rofi -show drun"
-set $filemanager thunar
-set $browser firefox
-set $codeeditor code
-set $texteditor mousepad
+# Remove the old application definitions and include the new apps config
+include ~/.config/i3/config.d/apps.conf
 
 # Font settings
 font pango: JetBrainsMono Nerd Font 6

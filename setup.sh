@@ -24,7 +24,7 @@ PACKAGES=(
 )
 
 LOGFILE=~/setup_$(date +%Y%m%d_%H%M%S).log
-exec > >(tee -a "$LOGFILE") 2>&1
+exec > >(stdbuf -oL -eL tee -a "$LOGFILE") 2>&1
 
 # Add sudo credential caching
 cache_sudo_credentials() {
@@ -48,15 +48,23 @@ check_system() {
     done
 }
 
+setup_yay() {
+    command -v yay || {
+        echo -e "${YELLOW}Setting up yay...${NC}"
+        sudo -v  # Refresh sudo credentials before yay installation
+        git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
+        cd /tmp/yay-bin || return 1
+        sudo pacman -S --noconfirm --needed base-devel
+        makepkg -s --noconfirm
+        sudo pacman -U --noconfirm ./*.pkg.tar.zst
+        cd - || return 1
+        rm -rf /tmp/yay-bin
+    }
+}
+
 install_packages() {
     sudo pacman -Syu --noconfirm || return 1
     sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" || return 1
-    
-    command -v yay || {
-        git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
-        (cd /tmp/yay-bin && makepkg -si --noconfirm)
-        rm -rf /tmp/yay-bin
-    }
 }
 
 setup_git() {
@@ -85,8 +93,9 @@ main() {
     
     check_system
     setup_git
-    install_packages
-    install_browser
+    setup_yay          # Move yay setup earlier
+    install_browser    # Move browser selection earlier
+    install_packages   # Move regular package installation after
 
     # Quick setup commands
     sudo brightnessctl set 3% || true

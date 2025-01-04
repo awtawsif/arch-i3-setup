@@ -24,7 +24,7 @@ PACKAGES=(
 )
 
 LOGFILE=~/setup_$(date +%Y%m%d_%H%M%S).log
-exec > >(stdbuf -oL -eL tee -a "$LOGFILE") 2>&1
+script -q -c "./setup.sh" "$LOGFILE"
 
 # Add sudo credential caching
 cache_sudo_credentials() {
@@ -54,7 +54,6 @@ setup_yay() {
         sudo -v  # Refresh sudo credentials before yay installation
         git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
         cd /tmp/yay-bin || return 1
-        sudo pacman -S --noconfirm --needed base-devel
         makepkg -s --noconfirm
         sudo pacman -U --noconfirm ./*.pkg.tar.zst
         cd - || return 1
@@ -90,7 +89,7 @@ install_browser() {
 
 main() {
     echo -e "${CYAN}╔════════ System Setup Installation ════════╗${NC}"
-    
+
     check_system
     setup_git
     setup_yay          # Move yay setup earlier
@@ -100,17 +99,16 @@ main() {
     # Quick setup commands
     sudo brightnessctl set 3% || true
     sudo systemctl enable bluetooth ly.service
-    
+
     # Create dirs and copy files
     mkdir -p ~/Documents ~/Downloads ~/Pictures ~/Music ~/Videos ~/Projects
     sudo mkdir -p /etc/X11/xorg.conf.d/
     sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/
     cp .bashrc ~/
     cp -r .config ~/
-    cp -r Wallpapers ~/Pictures/
-    chmod +x ~/Pictures/Wallpapers/set_random_wallpaper.sh
+    chmod +x ~/.config/set_random_wallpaper.sh
     rm -f ~/.bash_profile
-    
+
     echo -e "${GREEN}Installation Complete! Please reboot.${NC}"
 }
 

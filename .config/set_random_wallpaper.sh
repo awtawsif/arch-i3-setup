@@ -21,17 +21,10 @@ WALLPAPER_URL="https://minimalistic-wallpaper.demolab.com/?random"
 
 # Function to download a wallpaper and save it to a specific file
 download_wallpaper() {
-    python3 - <<EOF
-import requests
-try:
-    response = requests.get("$WALLPAPER_URL", timeout=10)
-    response.raise_for_status()  # Ensure the request was successful
-    with open("$1", "wb") as f:
-        f.write(response.content)
-    print("success")
-except requests.exceptions.RequestException as e:
-    print(f"Error: {e}")
-EOF
+    if ! curl -s -L -o "$1" "$WALLPAPER_URL"; then
+        return 1
+    fi
+    return 0
 }
 
 # Step 1: Use preloaded wallpaper if available

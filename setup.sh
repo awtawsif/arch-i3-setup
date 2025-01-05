@@ -11,7 +11,7 @@ NC="\033[0m"
 # Consolidated package groups
 PACKAGES=(
     # Core & System
-    htop exa bat alacritty brightnessctl nano nano-syntax-highlighting
+    htop exa bat upower alacritty brightnessctl nano nano-syntax-highlighting
     mousepad bash-completion i3-wm i3blocks fastfetch xss-lock
     bluez bluez-utils blueman lxappearance man-db ly network-manager-applet
     # File Management
@@ -23,8 +23,8 @@ PACKAGES=(
     gnome-themes-standard papirus-icon-theme
 )
 
-LOGFILE=~/setup_$(date +%Y%m%d_%H%M%S).log
-script -q -c "./setup.sh" "$LOGFILE"
+#LOGFILE=~/setup_$(date +%Y%m%d_%H%M%S).log
+#script -q -c "./setup.sh" "$LOGFILE"
 
 # Add sudo credential caching
 cache_sudo_credentials() {

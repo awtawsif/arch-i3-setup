@@ -1,138 +1,99 @@
 # Arch Linux i3 Window Manager Setup Script
 
-## Who is This For?
+## Overview
 
-This script is perfect for:
-- New Arch Linux users
-- Minimal Arch installation users
-- Developers and power users
-- Anyone wanting a streamlined i3 window manager setup
+A streamlined setup script for Arch Linux that installs and configures i3 window manager along with essential tools for a productive development environment.
 
-## What This Script Does
+## Features
 
-Transforms a minimal Arch Linux installation into a fully configured development and productivity environment with i3 window manager, featuring:
-- Automated system package installation
-- Automatic backup and restore of configurations
-- Smart package group management
-- Development environment setup
-- Desktop environment customization
+- i3 window manager configuration
+- Terminal setup (Alacritty)
+- File management (Thunar)
+- System monitoring tools
+- Modern CLI tools (exa, bat)
+- Bluetooth support
+- Display manager (ly)
 
-## 🔍 Detailed Prerequisites
+## Package Groups
 
-### System Requirements
-- Fresh Arch Linux installation (minimal or base install)
-- Working internet connection
+The script installs these main package groups:
+
+### Core & System
+- htop, exa, bat, alacritty
+- i3-wm, i3blocks, i3status-rust
+- brightnessctl, fastfetch
+- Bluetooth utilities
+- Network management
+
+### File Management
+- Thunar with plugins
+- Archive support (zip, unzip, unrar)
+- Device mounting support (gvfs)
+
+### UI & Theming
+- Rofi (application launcher)
+- Dunst (notifications)
+- Flameshot (screenshots)
+- Custom fonts and icons
+- Theme packages
+
+## Prerequisites
+
+- Fresh Arch Linux installation (Xorg Installaion)
+- Internet connection
 - Non-root user with sudo privileges
+- Git (to clone this repository)
 
-## 📦 Package Groups
+## Installation
 
-The script organizes packages into logical groups:
-- **Core**: Essential system components
-- **Archive**: File compression tools
-- **System**: System utilities and services
-- **File Manager**: File management tools
-- **UI**: User interface components
-- **Theme**: Fonts and visual customization
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/yourusername/arch-i3-setup.git
+   cd arch-i3-setup
+   ```
 
-## 🛡️ Safety Features
+2. Run the setup script:
+   ```bash
+   ./setup.sh
+   ```
 
-### Automatic Backup
-- Creates timestamped backups before installation
-- Backs up existing configurations to `~/.config_backups/`
-- Automatic rollback on failure
+3. During installation, you'll be prompted to:
+   - Configure Git (optional)
+   - Select a web browser
+   - Enter sudo password when required
 
-### Error Handling
-- Comprehensive error detection
-- Automatic configuration restoration on failure
-- Detailed logging of all operations
-- Interrupt handling with safe cleanup
+## What the Script Does
 
-### Safety Checks
-- Non-root execution requirement
-- Internet connectivity verification
-- Package verification after installation
-- Configuration validation
+1. Performs system checks
+2. Sets up Git configuration (optional)
+3. Installs yay AUR helper
+4. Lets you choose and install a web browser
+5. Installs all required packages
+6. Sets up system services (bluetooth, display manager)
+7. Creates basic directory structure
+8. Copies configuration files
+9. Configures input devices
 
-## 🛠 Pre-Installation Checklist
+## Post-Installation
 
-1. Complete Xorg Arch Linux installation
-2. Ensure sudo access for current user
-3. Connect to internet
-4. Clone this repository
-5. Navigate to script directory
+After installation completes:
+1. Reboot your system
+2. Log in through ly display manager
+3. i3 will start automatically
+4. Use $mod+Return for terminal
+5. Use $mod+d for application launcher
 
-## 🔧 Installation Modes
+## Troubleshooting
 
-### Standard Installation
-```bash
-./setup.sh
-```
+- Check the log file created at `~/setup_[timestamp].log`
+- Ensure all required files are present before running
+- Verify internet connection
+- Make sure script is run from correct directory
 
-### Force Mode
-```bash
-./setup.sh --force
-```
-Skips prerequisite checks (use with caution)
+## Contributing
 
-## 📋 Installation Process
-
-1. Safety checks and backups
-2. Git configuration (optional)
-3. AUR helper (yay) installation
-4. Package installations by group
-5. Browser installation (user choice)
-6. System service configuration
-7. Directory structure setup
-8. Configuration deployment
-9. System cleanup
-
-## 🔍 Troubleshooting
-
-### Installation Log
-- Located at `~/setup_[timestamp].log`
-- Contains detailed operation information
-- Useful for debugging issues
-
-### Common Issues
-- Ensure sudo privileges
-- Check internet connection
-- Verify file permissions
-- Review backup directory if restore needed
-
-## 📋 Post-Installation Steps
-
-1. Reboot system
-2. Review configuration files
-3. Customize to personal preference
-
-## ⚠️ Important Warnings
-
-- Review script before execution
-- Understand each step
-- Backup important data
-- Not recommended for production servers without review
-
-## 🤝 Contributing
-
-Contributions welcome!
-1. Fork repository
-2. Create feature branch
-3. Commit changes
-4. Push to branch
-5. Create pull request
-
-## 🆘 Support
-
-- Open GitHub issues for bugs
-- Provide detailed error logs
-- Be specific about your environment
-
-## 📚 Learning Resources
-
-- [Arch Linux Wiki](https://wiki.archlinux.org/)
-- [i3 Window Manager Documentation](https://i3wm.org/docs/)
-- Linux community forums
-
-## 🎉 Enjoy Your New Environment!
-
-Transform your minimal Arch installation into a powerful, personalized workstation with just one script!
+Feel free to submit issues and pull requests for:
+- Bug fixes
+- New features
+- Documentation improvements
+- Configuration enhancements

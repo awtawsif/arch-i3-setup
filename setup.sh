@@ -43,7 +43,7 @@ check_system() {
     cache_sudo_credentials || { echo -e "${RED}Failed to cache sudo credentials${NC}"; exit 1; }
     ping -c 1 8.8.8.8 >/dev/null 2>&1 || { echo -e "${RED}No internet connection${NC}"; exit 1; }
     [[ ! -f "./setup.sh" ]] && { echo -e "${RED}Run from correct directory${NC}"; exit 1; }
-    for item in "40-libinput.conf" ".bashrc" "Wallpapers" ".config"; do
+    for item in "40-libinput.conf" ".bashrc" ".config"; do
         [[ ! -e "$item" ]] && { echo -e "${RED}Missing: $item${NC}"; exit 1; }
     done
 }

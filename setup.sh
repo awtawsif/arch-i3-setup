@@ -12,7 +12,7 @@ NC="\033[0m"
 PACKAGES=(
     # Core & System
     htop exa bat upower alacritty brightnessctl nano nano-syntax-highlighting
-    mousepad bash-completion i3-wm i3blocks i3lock fastfetch xss-lock
+    mousepad bash-completion i3-wm i3blocks i3lock fastfetch wget xss-lock
     bluez bluez-utils blueman lxappearance man-db ly network-manager-applet
     # File Management
     thunar thunar-volman thunar-archive-plugin gvfs gvfs-mtp

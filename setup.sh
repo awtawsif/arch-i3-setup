@@ -12,19 +12,23 @@ NC="\033[0m"
 PACKAGES=(
     # Core & System
     htop exa copyq bat upower alacritty brightnessctl nano nano-syntax-highlighting
-    mousepad bash-completion i3-wm i3blocks i3lock fastfetch wget xss-lock
+    mousepad bash-completion i3-wm i3blocks fastfetch wget xss-lock
     bluez bluez-utils blueman lxappearance man-db ly network-manager-applet
     # File Management
     thunar thunar-volman thunar-archive-plugin gvfs gvfs-mtp
     unrar zip unzip xarchiver
     # UI & Theming
-    feh flameshot dunst rofi i3status-rust tumbler
+    feh flameshot dunst rofi rofi-emoji i3status-rust tumbler
     ttf-font-awesome ttf-jetbrains-mono-nerd noto-fonts-emoji
     gnome-themes-standard papirus-icon-theme
 )
 
-#LOGFILE=~/setup_$(date +%Y%m%d_%H%M%S).log
-#script -q -c "./setup.sh" "$LOGFILE"
+# Add this after the PACKAGES array
+CHAOTIC_PACKAGES=(
+    i3lock-color
+    visual-studio-code-bin
+    octopi
+)
 
 # Add sudo credential caching
 cache_sudo_credentials() {
@@ -61,9 +65,34 @@ setup_yay() {
     }
 }
 
+setup_chaotic_aur() {
+    echo -e "${YELLOW}Setting up Chaotic AUR...${NC}"
+    
+    # Install and sign the key
+    sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com || return 1
+    sudo pacman-key --lsign-key 3056513887B78AEB || return 1
+    
+    # Install chaotic-keyring and mirrorlist
+    sudo pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' \
+        'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' || return 1
+    
+    # Add chaotic-aur to pacman.conf if not already present
+    if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then
+        echo -e "\n[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist" | sudo tee -a /etc/pacman.conf
+    fi
+    
+    # Update package database
+    sudo pacman -Sy
+}
+
 install_packages() {
     sudo pacman -Syu --noconfirm || return 1
     sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" || return 1
+}
+
+install_chaotic_packages() {
+    echo -e "${YELLOW}Installing Chaotic AUR packages...${NC}"
+    sudo pacman -S --noconfirm --needed "${CHAOTIC_PACKAGES[@]}" || return 1
 }
 
 setup_git() {
@@ -92,9 +121,11 @@ main() {
 
     check_system
     setup_git
-    setup_yay          # Move yay setup earlier
-    install_browser    # Move browser selection earlier
-    install_packages   # Move regular package installation after
+    setup_yay
+    setup_chaotic_aur
+    install_browser
+    install_packages
+    install_chaotic_packages
 
     # Quick setup commands
     sudo brightnessctl set 3% || true

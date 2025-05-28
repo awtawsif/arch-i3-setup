@@ -11,7 +11,7 @@ NC="\033[0m"
 # Consolidated package groups
 PACKAGES=(
     # Core & System
-    htop exa copyq bat upower alacritty brightnessctl nano nano-syntax-highlighting
+    github-cli htop exa copyq bat upower alacritty brightnessctl nano nano-syntax-highlighting
     mousepad bash-completion i3-wm i3blocks fastfetch wget xss-lock
     bluez bluez-utils blueman nwg-look man-db ly network-manager-applet
     # File Management

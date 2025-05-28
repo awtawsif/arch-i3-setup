@@ -67,20 +67,20 @@ setup_yay() {
 
 setup_chaotic_aur() {
     echo -e "${YELLOW}Setting up Chaotic AUR...${NC}"
-    
+
     # Install and sign the key
     sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com || return 1
     sudo pacman-key --lsign-key 3056513887B78AEB || return 1
-    
+
     # Install chaotic-keyring and mirrorlist
     sudo pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' \
         'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' || return 1
-    
+
     # Add chaotic-aur to pacman.conf if not already present
     if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then
         echo -e "\n[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist" | sudo tee -a /etc/pacman.conf
     fi
-    
+
     # Update package database
     sudo pacman -Sy
 }

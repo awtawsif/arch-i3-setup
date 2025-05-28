@@ -71,7 +71,7 @@ export XDG_DATA_HOME="$HOME/.local/share"
 
 # Essential environment settings
 export EDITOR="nano"
-export TERM="xterm-256color"
+export TERM="alacritty"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 

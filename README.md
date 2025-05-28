@@ -48,7 +48,7 @@ The script installs these main package groups:
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/arch-i3-setup.git
+   git clone https://github.com/dark-f1are/arch-i3-setup.git
    cd arch-i3-setup
    ```
 

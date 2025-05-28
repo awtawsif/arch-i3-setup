@@ -13,7 +13,7 @@ PACKAGES=(
     # Core & System
     htop exa copyq bat upower alacritty brightnessctl nano nano-syntax-highlighting
     mousepad bash-completion i3-wm i3blocks fastfetch wget xss-lock
-    bluez bluez-utils blueman lxappearance man-db ly network-manager-applet
+    bluez bluez-utils blueman nwg-look man-db ly network-manager-applet
     # File Management
     thunar thunar-volman thunar-archive-plugin gvfs gvfs-mtp
     unrar zip unzip xarchiver
@@ -26,8 +26,6 @@ PACKAGES=(
 # Add this after the PACKAGES array
 CHAOTIC_PACKAGES=(
     i3lock-color
-    visual-studio-code-bin
-    octopi
 )
 
 # Add sudo credential caching

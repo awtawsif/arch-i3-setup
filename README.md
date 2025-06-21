@@ -36,6 +36,8 @@ The script installs these main package groups:
 - Flameshot (screenshots)
 - Custom fonts and icons
 - Theme packages
+- i3lock-color (AUR)
+- Visual Studio Code (AUR)
 
 ## Prerequisites
 
@@ -43,6 +45,7 @@ The script installs these main package groups:
 - Internet connection
 - Non-root user with sudo privileges
 - Git (to clone this repository)
+- yay (AUR helper) will be installed automatically for AUR packages
 
 ## Installation
 
@@ -68,7 +71,7 @@ The script installs these main package groups:
 2. Sets up Git configuration (optional)
 3. Installs yay AUR helper
 4. Lets you choose and install a web browser
-5. Installs all required packages
+5. Installs all required packages (including AUR packages: i3lock-color, visual-studio-code-bin)
 6. Sets up system services (bluetooth, display manager)
 7. Creates basic directory structure
 8. Copies configuration files

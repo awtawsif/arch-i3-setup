@@ -23,9 +23,9 @@ PACKAGES=(
     gnome-themes-standard papirus-icon-theme
 )
 
-# Add this after the PACKAGES array
-CHAOTIC_PACKAGES=(
+YAY_PACKAGES=(
     i3lock-color
+    visual-studio-code-bin
 )
 
 # Add sudo credential caching
@@ -63,34 +63,14 @@ setup_yay() {
     }
 }
 
-setup_chaotic_aur() {
-    echo -e "${YELLOW}Setting up Chaotic AUR...${NC}"
-
-    # Install and sign the key
-    sudo pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com || return 1
-    sudo pacman-key --lsign-key 3056513887B78AEB || return 1
-
-    # Install chaotic-keyring and mirrorlist
-    sudo pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' \
-        'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' || return 1
-
-    # Add chaotic-aur to pacman.conf if not already present
-    if ! grep -q "\[chaotic-aur\]" /etc/pacman.conf; then
-        echo -e "\n[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist" | sudo tee -a /etc/pacman.conf
-    fi
-
-    # Update package database
-    sudo pacman -Sy
-}
-
 install_packages() {
     sudo pacman -Syu --noconfirm || return 1
     sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" || return 1
 }
 
-install_chaotic_packages() {
-    echo -e "${YELLOW}Installing Chaotic AUR packages...${NC}"
-    sudo pacman -S --noconfirm --needed "${CHAOTIC_PACKAGES[@]}" || return 1
+install_yay_packages() {
+    echo -e "${YELLOW}Installing AUR packages with yay...${NC}"
+    yay -S --noconfirm --needed "${YAY_PACKAGES[@]}" || return 1
 }
 
 setup_git() {
@@ -120,10 +100,9 @@ main() {
     check_system
     setup_git
     setup_yay
-    setup_chaotic_aur
     install_browser
     install_packages
-    install_chaotic_packages
+    install_yay_packages
 
     # Quick setup commands
     sudo brightnessctl set 3% || true

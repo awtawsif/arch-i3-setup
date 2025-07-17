@@ -102,8 +102,8 @@ install_powerpill_early() {
 install_packages() {
     echo -e "${YELLOW}Updating system and installing packages with powerpill...${NC}"
     # Use powerpill for system update and package installation
-    powerpill -Syu --noconfirm || return 1
-    powerpill -S --noconfirm --needed "${PACKAGES[@]}" || return 1
+    sudo powerpill -Syu --noconfirm || return 1
+    sudo powerpill -S --noconfirm --needed "${PACKAGES[@]}" || return 1
 }
 
 setup_git() {
@@ -121,9 +121,9 @@ install_browser() {
     echo -e "${YELLOW}Select browser:\n1) Firefox\n2) Chromium\n3) Brave\n4) Skip${NC}"
     read -rp "Choice [1-4]: " choice
     case $choice in
-        1) powerpill -S --noconfirm firefox ;; # Use powerpill for browser installation
-        2) powerpill -S --noconfirm chromium ;; # Use powerpill for browser installation
-        3) powerpill -S --noconfirm brave-bin ;;
+        1) sudo powerpill -S --noconfirm firefox ;; # Use powerpill for browser installation
+        2) sudo powerpill -S --noconfirm chromium ;; # Use powerpill for browser installation
+        3) sudo powerpill -S --noconfirm brave-bin ;;
     esac
 }
 

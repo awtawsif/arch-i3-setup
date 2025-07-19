@@ -110,6 +110,13 @@ alias mv='mv -i'
 alias rm='rm -i'
 alias ln='ln -i'
 
+# Powerpill shortcuts
+alias ppup='sudo powerpill -Syu'
+alias ppin='sudo powerpill -S'
+alias pprem='sudo powerpill -Rns'
+alias ppclean='sudo powerpill -Sc'
+alias pporphan='sudo powerpill -Rns $(powerpill -Qtdq)'
+
 # Pacman shortcuts
 alias pacup='sudo pacman -Syu'
 alias pacin='sudo pacman -S'

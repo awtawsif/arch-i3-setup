@@ -1,223 +1,85 @@
-## Sample initialization file for GNU nano.
-##
-## For the options that take parameters, the default value is shown.
-## Other options are unset by default.  To make sure that an option
-## is disabled, you can use "unset <option>".
-##
-## Characters that are special in a shell should not be escaped here.
-## Inside string parameters, quotes should not be escaped -- the last
-## double quote on the line will be seen as the closing quote.
+## Modern, Intuitive, Elegant, Beautiful, and Performant nano Configuration
+## Combining your existing preferences with enhanced features, and default keybindings.
 
-## If you want ^F, ^B, M-F and M-B to do what they did before version 8.0:
-# bind ^F forward main
-# bind ^B back main
-# bind M-F formatter main
-# bind M-B linter main
+## --- Basic Editor Behavior ---
 
-## Make 'nextword' (Ctrl+Right) and 'chopwordright' (Ctrl+Delete)
-## stop at word ends instead of at beginnings.
-# set afterends
-
-## When soft line wrapping is enabled, make it wrap lines at blanks
-## (tabs and spaces) instead of always at the edge of the screen.
-# set atblanks
-
-## Automatically indent a newly created line to the same number of
-## tabs and/or spaces as the preceding line -- or as the next line
-## if the preceding line is the beginning of a paragraph.
+# Automatically indent new lines to the same level as the previous line.
 set autoindent
 
-## Back up files to the current filename plus a tilde.
-# set backup
-
-## The directory to put unique backup files in.
-# set backupdir ""
-
-## Use bold text instead of reverse video text.
-# set boldtext
-
-## Treat any line with leading whitespace as the beginning of a paragraph.
-# set bookstyle
-
-## The characters treated as closing brackets when justifying paragraphs.
-## This may not include any blank characters.  Only closing punctuation,
-## optionally followed by these closing brackets, can end sentences.
-# set brackets ""')>]}"
-
-## Automatically hard-wrap the current line when it becomes overlong.
-set breaklonglines
-
-## Do case-sensitive searches by default.
-# set casesensitive
-
-## Interpret digits given on the command line after a colon after a filename
-## as the line number to go to in that file.
-# set colonparsing
-
-## Constantly display the cursor position in the status bar or minibar.
+# Constantly report the cursor position (line, column, char) on the status bar.
 set constantshow
 
-## Use cut-from-cursor-to-end-of-line by default.
-# set cutfromcursor
-
-## Do not use the line below the title bar, leaving it entirely blank.
-# set emptyline
-
-## Set the target width for automatic hard-wrapping and for justifying
-## paragraphs.  If the specified value is 0 or less, the wrapping point
-## will be the terminal's width minus this number.
-# set fill -8
-
-## Draw a vertical stripe at the given column, to help judge text width.
-## (This option does not have a default value.)
-# set guidestripe 75
-
-## Remember the used search/replace strings for the next session.
-set historylog
-
-## Display a "scrollbar" on the righthand side of the edit window.
-set indicator
-
-## Scroll the buffer contents per half-screen instead of per line.
-# set jumpyscrolling
-
-## Display line numbers to the left (and any anchors in the margin).
+# Display line numbers to the left of the text area.
 set linenumbers
 
-## Enable vim-style lock-files.  This is just to let a vim user know you
-## are editing a file [s]he is trying to edit and vice versa.  There are
-## no plans to implement vim-style undo state in these files.
-# set locking
-
-## Fall back to slow libmagic to try and determine an applicable syntax.
-# set magic
-
-## The opening and closing brackets that are found by a matching-bracket
-## search.  This may not contain blank characters.  The opening brackets
-## must come before the closing ones, and they must be in the same order.
-# set matchbrackets "(<[{)>]}"
-
-## Suppress the title bar and show the filename plus a cursor-position
-## percentage in the space of the status bar.
-# set minibar
-
-## Enable mouse support, if available for your system.  When enabled,
-## mouse clicks can be used to place the cursor, set the mark (with
-## two clicks), and execute shortcuts.  The mouse will work in the
-## X Window System, and on the console when gpm is running.
-# set mouse
-
-## Switch on multiple file buffers (inserting a file will put it into
-## a separate buffer).
-set multibuffer
-
-## Don't convert files from DOS/Mac format.
-# set noconvert
-
-## Don't display the helpful shortcut lists at the bottom of the screen.
-# set nohelp
-
-## Don't automatically add a newline when a file does not end with one.
-# set nonewlines
-
-## Set operating directory.  nano will not read or write files outside
-## this directory and its subdirectories.  Also, the current directory
-## is changed to here, so any files are inserted from this dir.  A blank
-## string means the operating-directory feature is turned off.
-# set operatingdir ""
-
-## Remember the cursor position in each file for the next editing session.
-set positionlog
-
-## Preserve the XON and XOFF keys (^Q and ^S).
-# set preserve
-
-## The characters treated as closing punctuation when justifying paragraphs.
-## This may not contain blank characters.  Only these closing punctuations,
-## optionally followed by closing brackets, can end sentences.
-# set punct "!.?"
-
-## Make status-bar messages disappear after 1 keystroke instead of after 20.
-# set quickblank
-
-## The regular expression that matches quoting characters in email
-## or line-comment introducers in source code.  The default is:
-# set quotestr "^([ 	]*([!#%:;>|}]|//))+"
-
-## Try to work around a mismatching terminfo terminal description.
-# set rawsequences
-
-## Fix Backspace/Delete confusion problem.
-# set rebinddelete
-
-## Do regular-expression searches by default.
-## Regular expressions are of the extended type (ERE).
-# set regexp
-
-## Save a changed buffer automatically on exit; don't prompt.
-# set saveonexit
-
-## Put the cursor on the highlighted item in the file browser, and
-## show the cursor in the help viewer; useful for people who use a
-## braille display and people with poor vision.
-set showcursor
-
-## Make the Home key smarter: when Home is pressed anywhere but at the
-## very beginning of non-whitespace characters on a line, the cursor
-## will jump to that beginning (either forwards or backwards).  If the
-## cursor is already at that position, it will jump to the true start
-## of the line (the left edge).
+# Make the Home key smarter: jump to the beginning of non-whitespace text, then to the true start of the line.
 set smarthome
 
-## Spread overlong lines over multiple screen lines.
+# Display overlong lines on multiple screen lines (soft wrap).
 set softwrap
 
-## Use this spelling checker instead of the internal one.  This option
-## does not have a default value.
-# set speller "aspell -x -c"
+# Automatically hard-wrap the current line when it becomes overlong.
+set breaklonglines
 
-## Use the end of the title bar for some state flags: I = auto-indenting,
-## M = mark, L = hard-wrapping long lines, R = recording, S = soft-wrapping.
-# set stateflags
+# When soft wrapping, wrap lines at blank characters (spaces/tabs) instead of rudely at the screen edge.
+# (This was commented out in your file, but highly recommended for softwrap.)
+set atblanks
 
-## Use this tab size instead of the default; it must be greater than 0.
-set tabsize 4
-
-## Convert each typed tab to the fitting number of spaces.
+# Convert typed tabs to spaces, according to the tabsize.
 set tabstospaces
 
-## Snip whitespace at the end of lines when justifying or hard-wrapping.
-# set trimblanks
+# Set tab size to 4 columns for consistent indentation.
+set tabsize 4
 
-## Save files by default in Unix format (also when they were DOS or Mac).
-# set unix
+# Save files by default in Unix format (LF line endings).
+# (This was commented out in your file, but is a good modern default.)
+set unix
 
-## The two single-column characters used to display the first characters
-## of tabs and spaces.  187 in ISO 8859-1 (0000BB in Unicode) and 183 in
-## ISO-8859-1 (0000B7 in Unicode) seem to be good values for these.
-## The default when in a UTF-8 locale:
-# set whitespace "»·"
-## The default otherwise:
-# set whitespace ">."
+# Remove trailing whitespace from lines when saving or justifying.
+# (This was commented out in your file, but is good for clean code.)
+set trimblanks
 
-## Detect word boundaries differently by treating punctuation
-## characters as parts of words.
-# set wordbounds
+# Enable mouse support for cursor placement, marking, and executing shortcuts.
+# (This was commented out in your file, but is a common modern feature.)
+set mouse
 
-## The characters (besides alphanumeric ones) that should be considered
-## as parts of words.  This option does not have a default value.  When
-## set, it overrides option 'set wordbounds'.
-# set wordchars "<_>."
+# Save the last hundred search/replace strings and executed commands for reuse.
+set historylog
 
-## Let an unmodified Backspace or Delete erase the marked region (instead
-## of a single character, and without affecting the cutbuffer).
-# set zap
+# Remember cursor and anchor positions between sessions for recently edited files.
+set positionlog
 
-## Hide the bars plus help lines and use the whole terminal as edit area.
-# set zero
+# Display a scrollbar on the right-hand side of the edit window.
+set indicator
 
+# Make status-bar messages disappear quickly (after 1 keystroke).
+# (This was commented out in your file, but improves responsiveness.)
+set quickblank
 
-## Paint the interface elements of nano
+# Enable multi-buffer editing (inserting a file will put it into a separate buffer).
+set multibuffer
+
+# Put the cursor on the highlighted item in the file browser and show it in the help viewer.
+set showcursor
+
+# Use cut-from-cursor-to-end-of-line by default.
+# (This was commented out in your file, but is a common preference.)
+# set cutfromcursor
+
+# Enable vim-style lock files to indicate when a file is being edited.
+# (This was commented out in your file, but can be useful in collaborative environments.)
+# set locking
+
+# Allow backup files to succeed even if permissions can't be reset (use with caution).
+# set allow_insecure_backup
+
+## --- Interface Aesthetics and Colors ---
+
+# Use bold text instead of reverse video for interface elements.
+# (This was commented out in your file, but can enhance readability.)
+set boldtext
+
+# Your preferred color scheme:
 set titlecolor bold,black,blue
 set promptcolor bold,black,green
 set statuscolor bold,black,cyan
@@ -230,115 +92,136 @@ set numbercolor cyan
 set keycolor bold,white
 set functioncolor bold,green
 
-## Remove invalid syntax colors section
-# The syntax highlighting is handled by the included .nanorc files
-# We don't need to set these manually
+## --- Syntax Highlighting (Essential for Modern Editing) ---
 
-## In root's .nanorc you might want to use:
-# set titlecolor bold,white,magenta
-# set promptcolor black,yellow
-# set statuscolor bold,white,magenta
-# set errorcolor bold,white,red
-# set spotlightcolor black,orange
-# set selectedcolor lightwhite,cyan
-# set stripecolor ,yellow
-# set scrollercolor magenta
-# set numbercolor magenta
-# set keycolor lightmagenta
-# set functioncolor magenta
-
-
-## === Syntax coloring ===
-## For all details, see 'man nanorc', section SYNTAX HIGHLIGHTING.
-
-## To include most of the existing syntax definitions, you can do:
+# Include common syntax definitions. Adjust path if necessary for your system.
+# Your file included these, so we'll keep them.
 include /usr/share/nano/*.nanorc
-
-## Or you can select just the ones you need.  For example:
-# include /usr/share/nano/html.nanorc
-# include /usr/share/nano/python.nanorc
-# include /usr/share/nano/sh.nanorc
-
-## In /usr/share/nano/extra/ you can find some syntaxes that are
-## specific for certain distros or for some less common languages.
 include "/usr/share/nano/extra/*.nanorc"
 include "/usr/share/nano-syntax-highlighting/*.nanorc"
-## If <Tab> should always produce four spaces when editing a Python file,
-## independent of the settings of 'tabsize' and 'tabstospaces':
-# extendsyntax python tabgives "    "
 
+## --- Key Bindings (Default nano behavior) ---
 
-## === Key bindings ===
-## For all details, see 'man nanorc', section REBINDING KEYS.
+# Rebind ^F to forward search (default since nano 8.0, but explicit for clarity)
+bind ^F forward main
 
-## If you want to suspend nano with one keystroke (instead of with ^T^Z):
-# bind ^Z suspend main
+# Rebind ^B to backward search (default since nano 8.0, but explicit for clarity)
+bind ^B back main
 
-## The <Ctrl+Delete> keystroke deletes the word to the right of the cursor.
-## On some terminals the <Ctrl+Backspace> keystroke produces ^H, which is
-## the ASCII character for backspace, so it is bound by default to the
-## backspace function.  The <Backspace> key itself produces a different
-## keycode, which is hard-bound to the backspace function.  So, if you
-## normally use <Backspace> for backspacing and not ^H, you can make
-## <Ctrl+Backspace> delete the word to the left of the cursor with:
-# bind ^H chopwordleft main
+# Make M-F (Alt-F) perform formatting (if syntax defines a formatter)
+bind M-F formatter main
 
-## For a more mnemonic Comment keystroke (overriding Cut-from-cursor):
-# bind M-K comment main
+# Make M-B (Alt-B) perform linting (if syntax defines a linter)
+bind M-B linter main
 
-## If you want ^L to just refresh the screen and not center the cursor:
+# Suspend nano with Ctrl+Z (common Unix behavior)
+bind ^Z suspend main
+
+# Copy marked region to system clipboard (requires xsel or similar clipboard tool)
+# On macOS, you might use 'pbcopy' instead of 'xsel -ib'
+# bind Sh-M-C "{execute}| xsel -ib {enter}{undo}" main
+
+# Restore default cut/copy/paste (Ctrl+K for cut, Alt+6 for copy, Ctrl+U for paste)
+# These are the nano defaults, no explicit bind needed unless overriding.
+# If you want to explicitly set them back:
+# bind ^K cut main
+# bind M-6 copy main
+# bind ^U paste all
+
+# Restore default exit (Ctrl+X)
+# bind ^X exit all
+
+# Restore default save/open (Ctrl+O for writeout, Ctrl+R for insert)
+# bind ^O writeout main
+# bind ^R insert main
+
+# Restore default search/replace (Ctrl+W for whereis, Ctrl+\ for replace)
+# bind ^W whereis all
+# bind ^\ replace all
+
+# Restore default mark (Ctrl+^)
+# bind ^@ mark main # Ctrl+@ is often Ctrl+Space or Ctrl+Shift+2
+
+# Restore default execute (M-!)
+# bind M-! execute main
+
+# Restore default undo/redo (Alt+U for undo, Alt+E for redo)
+# bind M-U undo main
+# bind M-E redo main
+
+# Restore default refresh (Ctrl+L)
 bind ^L refresh main
 
-## When you sometimes type M-J instead of M-K, or M-T instead of M-R:
-# unbind M-J main
-# unbind M-T main
-## (Those functions are still accessible through ^T^J and ^T^V.)
+# Restore default comment (M-K)
+bind M-K comment main
 
-## For quickly uppercasing or lowercasing the word under or after the cursor.
-## (These effectively select a word and pipe it through a sed command.)
-# bind Sh-M-U "{nextword}{mark}{prevword}{execute}|sed 's/.*/\U&/'{enter}" main
-# bind Sh-M-L "{nextword}{mark}{prevword}{execute}|sed 's/.*/\L&/'{enter}" main
+# Restore default word deletion (M-Del for chopwordright, M-Backspace for chopwordleft)
+# bind M-Del chopwordright main
+# bind M-Backspace chopwordleft main
 
-## For copying a marked region to the system clipboard:
-# bind Sh-M-C "{execute}|xsel -ib{enter}{undo}" main
+# Restore default go to line (Ctrl+_)
+# bind ^_ gotoline main
 
-## For normalizing Unicode to precomposed characters:
-# bind Sh-M-N "{execute}| uconv -x nfc {enter}" main
+# Restore default find next/previous (Alt+W for findnext, Alt+Q for findprevious)
+# bind M-W findnext all
+# bind M-Q findprevious all
 
-## For snipping trailing blanks when you save a file:
-# bind ^S "{execute}| sed 's/\s\+$//' {enter}{savefile}" main
+# Restore default go to beginning/end of line (Ctrl+A / Ctrl+E)
+# bind ^A home main
+# bind ^E end main
 
-## If you would like nano to have keybindings that are more "usual",
-## such as ^O for Open, ^F for Find, ^H for Help, and ^Q for Quit,
-## then uncomment these:
-bind ^X cut main
-bind ^C copy main
-bind ^V paste all
-bind ^Q exit all
-bind ^S savefile main
-# bind ^W writeout main
-bind ^O insert main
-# set multibuffer
-# bind ^H help all
-# bind ^H exit help
-bind ^F whereis all
-bind ^G findnext all
-bind ^B wherewas all
-bind ^D findprevious all
-bind ^R replace main
+# Restore default location (Ctrl+C)
+# bind ^C location main
+
+# Restore default browser navigation (M-Y for gotodir)
+# bind M-Y gotodir browser
+
+# Restore default cut rest of file (M-T)
+# bind M-T cutrestoffile execute
+
+# Restore default linter (M-B, already handled above)
+
+# Restore default unbinds (if any were explicitly set)
+# These are typically not needed unless you had specific unbinds.
 # unbind ^U all
 # unbind ^N main
 # unbind ^Y all
 # unbind M-J main
 # unbind M-T main
-bind ^A mark main
-# bind ^P location main
-# bind ^T gotoline main
-# bind ^T gotodir browser
-# bind ^T cutrestoffile execute
-# bind ^L linter execute
-bind ^E execute main
-bind ^K "{mark}{end}{zap}" main
-bind ^U "{mark}{home}{zap}" main
-bind ^Z undo main
-bind ^Y redo main
+
+
+## --- Advanced Settings (Uncomment if needed) ---
+
+# Do case-sensitive searches by default.
+# (This was commented out in your file, uncomment if desired.)
+# set casesensitive
+
+# Use regular expressions for searches by default.
+# (This was commented out in your file, uncomment if desired.)
+# set regexp
+
+# Set the target width for justifying and automatic hard-wrapping.
+# If 0 or less, wrapping occurs at screen width minus the number.
+# (This was commented out in your file, uncomment if desired.)
+# set fill -8
+
+# Draw a vertical stripe at a specific column (e.g., 80 for code style guides).
+# (This was commented out in your file, uncomment if desired.)
+# set guidestripe 80
+# set stripecolor ,#333 # A subtle dark grey stripe
+
+# Use a custom spell checker (e.g., aspell)
+# (This was commented out in your file, uncomment if desired.)
+# set speller "aspell -x -c"
+
+# Set custom characters for displaying tabs and spaces (default is "»⋅" for UTF-8)
+# (This was commented out in your file, uncomment if desired.)
+# set whitespace "»·"
+
+# Treat punctuation characters as parts of words (useful for programming)
+# (This was commented out in your file, uncomment if desired.)
+# set wordbounds
+
+# Specify additional characters to be considered part of words (overrides wordbounds if set)
+# (This was commented out in your file, uncomment if desired.)
+# set wordchars "_-" # Example: include underscore and hyphen in words

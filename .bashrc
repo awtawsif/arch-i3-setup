@@ -131,6 +131,11 @@ alias pkgfile='pacman -Fl'                      # List remote package files
 alias pkgcheck='pacman -Qk'                     # Check package files
 alias pkgdeps='pacman -Qii'                     # Show package dependencies
 
+# Git operation shortcuts
+alias gitclone='git clone "https://github.com/$1/$2.git"'
+alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold
+blue)<%an>%Creset' --abbrev-commit --date=relative"
+
 # ===== Functions =====
 # Create and enter directory
 mkcd() { mkdir -p "$1" && cd "$1"; }
@@ -202,3 +207,7 @@ stty -ixon  # Enable Ctrl+S for forward search
 
 # Reduce disk writes
 export LESSHISTFILE=/dev/null
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

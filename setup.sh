@@ -18,7 +18,7 @@ PACKAGES=(
     unrar zip unzip xarchiver p7zip # rsync moved to install_powerpill_early
     # UI & Theming
     feh flameshot dunst rofi rofi-emoji i3status-rust tumbler
-    ttf-font-awesome ttf-jetbrains-mono-nerd noto-fonts-emoji
+    otf-font-awesome ttf-jetbrains-mono-nerd noto-fonts-emoji
     gnome-themes-standard papirus-icon-theme
     # Packages previously from YAY_PACKAGES, now from Chaotic-AUR
     i3lock-color

@@ -44,14 +44,12 @@ The script installs these main package groups:
 - Fresh Arch Linux installation (Xorg Installaion)
 - Internet connection
 - Non-root user with sudo privileges
-- Git (to clone this repository)
-- yay (AUR helper) will be installed automatically for AUR packages
 
 ## Installation
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/dark-f1are/arch-i3-setup.git
+   git clone https://github.com/awtawsif/arch-i3-setup.git
    cd arch-i3-setup
    ```
 
@@ -70,6 +68,7 @@ The script installs these main package groups:
 1. Performs system checks
 2. Sets up Git configuration (optional)
 3. Installs yay AUR helper
+4. Sets up chaotic-aur repo
 4. Lets you choose and install a web browser
 5. Installs all required packages (including AUR packages: i3lock-color, visual-studio-code-bin)
 6. Sets up system services (bluetooth, display manager)
@@ -88,7 +87,6 @@ After installation completes:
 
 ## Troubleshooting
 
-- Check the log file created at `~/setup_[timestamp].log`
 - Ensure all required files are present before running
 - Verify internet connection
 - Make sure script is run from correct directory

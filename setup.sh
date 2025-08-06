@@ -45,7 +45,7 @@ main() {
 
     check_system
     setup_git
-    
+
     # Call the package installation script
     chmod +x ./install_packages.sh
     ./install_packages.sh
@@ -60,6 +60,7 @@ main() {
     sudo cp 40-libinput.conf /etc/X11/xorg.conf.d/
     cp .bashrc ~/
     cp .profile ~/
+    source ~/.profile
     cp -r .config ~/
     chmod +x ~/.config/set_random_wallpaper.sh
     rm -f ~/.bash_profile

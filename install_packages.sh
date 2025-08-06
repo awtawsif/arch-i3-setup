@@ -12,12 +12,12 @@ PACKAGES=(
     # Core & System
     github-cli htop exa copyq bat upower alacritty brightnessctl nano nano-syntax-highlighting
     mousepad bash-completion i3-wm i3blocks fastfetch wget xss-lock
-    bluez bluez-utils blueman nwg-look man-db ly jq network-manager-applet xclip
+    bluez bluez-utils blueman nwg-look man-db ly jq network-manager-applet xclip xdg-desktop-portal-gtk
     # Node
-    nvm
+    npm
     # File Management
     thunar thunar-volman thunar-archive-plugin gvfs gvfs-mtp
-    unrar zip unzip xarchiver p7zip # rsync moved to install_powerpill_early
+    unrar zip unzip xarchiver p7zip
     # UI & Theming
     feh flameshot dunst rofi rofi-emoji i3status-rust tumbler
     otf-font-awesome ttf-jetbrains-mono-nerd noto-fonts-emoji

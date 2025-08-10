@@ -62,7 +62,6 @@ main() {
     cp .profile ~/
     source ~/.profile
     cp -r .config ~/
-    chmod +x ~/.config/set_random_wallpaper.sh
     rm -f ~/.bash_profile
 
     echo -e "${GREEN}Installation Complete! Please reboot.${NC}"

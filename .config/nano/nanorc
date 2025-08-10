@@ -226,3 +226,5 @@ bind M-K comment main
 # (This was commented out in your file, uncomment if desired.)
 # set wordchars "_-" # Example: include underscore and hyphen in words
 
+# Let  an  unmodified Backspace or Delete erase the marked region (instead of a single character, and without affecting the cutbuffer).
+set zap

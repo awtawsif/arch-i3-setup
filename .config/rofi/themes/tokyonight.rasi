@@ -1,0 +1,144 @@
+/* ~/.config/rofi/tokyonight.rasi */
+
+* {
+    bg-col: #1a1b26;
+    bg-col-light: #24283b;
+    bg-col-lighter: #2f334d;
+    border-col: #7aa2f7;
+    selected-col: #414868;
+    blue: #7aa2f7;
+    red: #f7768e;
+    green: #9ece6a;
+    orange: #ff9e64;
+    purple: #bb9af7;
+    yellow: #e0af68;
+    fg-col: #c0caf5;
+    fg-col2: #ffffff;
+    grey: #565f89;
+    width: 800px;
+    border-radius: 12px;
+}
+window {
+    background-color: @bg-col;
+    border: 2px;
+    border-color: @border-col;
+    border-radius: @border-radius;
+    padding: 8px;
+    width: @width;
+    height: 560px;
+    spacing: 0px;
+}
+mainbox {
+    background-color: transparent;
+    children: [inputbar, listview, mode-switcher];
+    spacing: 12px;
+    padding: 8px;
+}
+inputbar {
+    background-color: @bg-col-light;
+    children: [prompt, entry];
+    border-radius: @border-radius;
+    padding: 8px;
+    spacing: 8px;
+}
+prompt {
+    background-color: @blue;
+    padding: 12px;
+    text-color: @bg-col;
+    border-radius: 8px;
+}
+entry {
+    background-color: @bg-col-lighter;
+    padding: 12px;
+    text-color: @fg-col;
+    border-radius: 8px;
+    placeholder: "Type to search...";
+}
+listview {
+    background-color: transparent;
+    border: 0;
+    padding: 8px 4px;
+    spacing: 8px;
+    fixed-height: false;
+    scrollbar: true;
+    lines: 8;
+}
+scrollbar {
+    background-color: @bg-col-light;
+    handle-color: @blue;
+    handle-width: 8px;
+    border-radius: 8px;
+    padding: 2px;
+    margin: 0 4px;
+}
+element {
+    background-color: @bg-col-light;
+    padding: 12px;
+    border-radius: 8px;
+    spacing: 12px;
+}
+element normal.normal,
+element alternate.normal {
+    background-color: @bg-col-light;
+    text-color: @fg-col;
+}
+element selected.normal {
+    background-color: @selected-col;
+    text-color: @fg-col2;
+    border: 1px;
+    border-color: @border-col;
+}
+element-icon {
+    size: 24px;
+    padding: 0 8px 0 0;
+    background-color: transparent;
+}
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    vertical-align: 0.5;
+}
+mode-switcher {
+    background-color: @bg-col-light;
+    padding: 8px;
+    border-radius: @border-radius;
+}
+button {
+    padding: 8px 12px;
+    background-color: @bg-col-light;
+    text-color: @fg-col;
+    border-radius: 8px;
+    cursor: pointer;
+}
+button selected {
+    background-color: @blue;
+    text-color: @bg-col;
+}
+element.emoji {
+    font-size: 24px;
+}
+element.power {
+    border-radius: 12px;
+    padding: 16px;
+}
+element.power selected {
+    background-color: @red;
+}
+element.calc {
+    font-family: "JetBrainsMono Nerd Font Mono";
+}
+message {
+    background-color: @bg-col-light;
+    padding: 12px;
+    border-radius: @border-radius;
+}
+textbox {
+    padding: 12px;
+    text-color: @fg-col;
+}
+error-message {
+    background-color: @red;
+    text-color: @fg-col2;
+    padding: 12px;
+    border-radius: @border-radius;
+}

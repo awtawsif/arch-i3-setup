@@ -11,7 +11,7 @@ NC="\033[0m"
 PACKAGES=(
     # Core & System
     github-cli htop exa copyq bat upower alacritty brightnessctl nano nano-syntax-highlighting
-    mousepad zed bash-completion i3-wm i3blocks fastfetch wget xss-lock
+    mousepad visual-studio-code-bin bash-completion i3-wm i3blocks fastfetch wget xss-lock
     bluez bluez-utils blueman nwg-look man-db ly jq network-manager-applet xclip xdg-desktop-portal-gtk
     # Node
     npm
@@ -22,6 +22,8 @@ PACKAGES=(
     feh flameshot dunst rofi rofi-emoji i3status-rust tumbler
     otf-font-awesome ttf-jetbrains-mono-nerd noto-fonts-emoji
     gnome-themes-standard papirus-icon-theme i3lock-color
+    # Browser
+    firefox
 )
 
 install_packages() {
@@ -31,21 +33,9 @@ install_packages() {
     sudo powerpill -S --noconfirm --needed "${PACKAGES[@]}" || return 1
 }
 
-install_browser() {
-    echo -e "${YELLOW}Select browser:\n1) Firefox\n2) Chromium\n3) Brave\n4) Librewolf\n5) Skip${NC}"
-    read -rp "Choice [1-5]: " choice
-    case $choice in
-        1) sudo powerpill -S --noconfirm firefox ;; # Use powerpill for browser installation
-        2) sudo powerpill -S --noconfirm chromium ;; # Use powerpill for browser installation
-        3) sudo powerpill -S --noconfirm brave-bin ;;
-        4) sudo powerpill -S --noconfirm librewolf;;
-    esac
-}
-
 main() {
     chmod +x ./setup_aur.sh
     ./setup_aur.sh
-    install_browser
     install_packages # This function now uses powerpill
 }
 

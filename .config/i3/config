@@ -10,8 +10,8 @@ exec_always --no-startup-id ~/.config/set_random_wallpaper.sh
 set $terminal alacritty
 set $launcher "rofi -show drun"
 set $filemanager thunar
-set $browser librewolf
-set $codeeditor zeditor
+set $browser firefox
+set $codeeditor code
 set $texteditor mousepad
 
 # Font settings

@@ -45,26 +45,9 @@ setup_chaotic_aur() {
     sudo pacman -Syu --noconfirm || { echo -e "${RED}Failed to sync Chaotic-AUR mirrorlist${NC}"; return 1; }
 }
 
-# New function to install powerpill and its optional dependencies early using pacman and modify SigLevel
-install_powerpill_early() {
-    echo -e "${YELLOW}Installing powerpill, rsync and reflector${NC}"
-    # Install powerpill and its optional dependencies (rsync, reflector)
-    sudo pacman -S --noconfirm --needed powerpill rsync reflector || { echo -e "${RED}Failed to install powerpill and its dependencies${NC}"; return 1; }
-
-    # Change SigLevel to PackageRequired in pacman.conf for powerpill
-    echo -e "${YELLOW}Setting SigLevel to PackageRequired in /etc/pacman.conf for Powerpill...${NC}"
-    if ! grep -q "SigLevel = PackageRequired" /etc/pacman.conf;
-    then
-        sudo sed -i '/^#\?SigLevel =/cSigLevel = PackageRequired' /etc/pacman.conf || { echo -e "${RED}Failed to set SigLevel in pacman.conf${NC}"; return 1; }
-    else
-        echo -e "${YELLOW}SigLevel is already set to PackageRequired, skipping modification.${NC}"
-    fi
-}
-
 main() {
     setup_yay
     setup_chaotic_aur
-    install_powerpill_early
 }
 
 main "$@"

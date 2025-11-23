@@ -21,7 +21,7 @@ PACKAGES=(
     # UI & Theming
     feh flameshot dunst rofi rofi-emoji i3status-rust tumbler
     otf-font-awesome ttf-jetbrains-mono-nerd noto-fonts-emoji
-    gnome-themes-standard papirus-icon-theme i3lock-color
+    tokyonight-gtk-theme-git i3lock-color
     # Browser
     firefox
 )
@@ -29,8 +29,8 @@ PACKAGES=(
 install_packages() {
     echo -e "${YELLOW}Updating system and installing packages with powerpill...${NC}"
     # Use powerpill for system update and package installation
-    sudo powerpill -Syu --noconfirm || return 1
-    sudo powerpill -S --noconfirm --needed "${PACKAGES[@]}" || return 1
+    sudo pacman -Syu --noconfirm || return 1
+    sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" || return 1
 }
 
 main() {

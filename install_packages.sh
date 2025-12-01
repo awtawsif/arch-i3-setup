@@ -32,7 +32,7 @@ PACKAGES=(
 )
 
 install_packages() {
-    echo -e "${YELLOW}Updating system and installing packages with powerpill...${NC}"
+    echo -e "${YELLOW}Updating system and installing packages with pacman...${NC}"
     # Use powerpill for system update and package installation
     sudo pacman -Syu --noconfirm || return 1
     sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" || return 1
@@ -41,7 +41,7 @@ install_packages() {
 main() {
     chmod +x ./setup_aur.sh
     ./setup_aur.sh
-    install_packages # This function now uses powerpill
+    install_packages
 }
 
 main "$@"

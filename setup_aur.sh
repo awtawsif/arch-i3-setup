@@ -33,8 +33,7 @@ setup_chaotic_aur() {
 
     # Append the Chaotic-AUR repository to /etc/pacman.conf
     echo -e "${YELLOW}Appending Chaotic-AUR repository to /etc/pacman.conf...${NC}"
-    if ! grep -q "\[chaotic-aur]" /etc/pacman.conf;
-    then
+    if ! grep -q "\[chaotic-aur]" /etc/pacman.conf; then
         echo -e "\n[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist" | sudo tee -a /etc/pacman.conf > /dev/null
     else
         echo -e "${YELLOW}Chaotic-AUR entry already exists in /etc/pacman.conf, skipping append.${NC}"

@@ -13,6 +13,11 @@ PACKAGES=(
     github-cli htop exa copyq bat upower alacritty brightnessctl nano nano-syntax-highlighting
     mousepad visual-studio-code-bin bash-completion i3-wm i3blocks fastfetch wget xss-lock
     bluez bluez-utils blueman nwg-look man-db ly jq network-manager-applet xclip xdg-desktop-portal-gtk
+    xdg-user-dirs polkit gparted
+    # Audio & Media
+    pipewire pipewire-pulse pipewire-alsa pavucontrol ffmpeg vlc mpv
+    # Security
+    firewalld
     # Node
     npm
     # File Management

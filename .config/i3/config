@@ -1,7 +1,7 @@
 # i3 config file (v4)
 
-# Mod key configuration (Mod1 corresponds to Alt)
-set $mod Mod1
+# Mod key configuration (Mod4 corresponds to Windows/Super key)
+set $mod Mod4
 
 # Set a Wallpaper
 exec_always --no-startup-id ~/.config/set_random_wallpaper.sh
@@ -59,7 +59,7 @@ bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
 # Floating modifier
-floating_modifier Mod1
+floating_modifier $mod
 
 # i3bar Configuration
 bar {

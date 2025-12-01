@@ -106,10 +106,10 @@ After installation completes:
 - **$mod+d**: Application launcher (Rofi)
 - **$mod+Shift+f**: File manager (Thunar)
 - **$mod+Shift+b**: Browser (Firefox)
-- **$mod+Shift+c**: Code editor (VS Code)
 - **$mod+Shift+t**: Text editor (Mousepad)
 - **$mod+Print**: Screenshot (Flameshot)
-- **$mod+Shift+r**: Reload i3 configuration
+- **$mod+Shift+r**: Restart i3
+- **$mod+Shift+c**: Reload i3 configuration
 
 ### Configuration Details
 - **Mod Key**: Windows/Super key (Mod4)

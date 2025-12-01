@@ -63,8 +63,6 @@ floating_modifier Mod1
 
 # i3bar Configuration
 bar {
-    mode hide
-    modifier none
     font pango: JetBrainsMono Nerd Font Propo 10
     status_command /usr/bin/i3status-rs $HOME/.config/i3rs-config.toml
     strip_workspace_numbers yes

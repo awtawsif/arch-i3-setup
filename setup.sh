@@ -52,7 +52,7 @@ main() {
 
     # Quick setup commands
     sudo brightnessctl set 3% || true
-    sudo systemctl enable bluetooth ly.service
+    sudo systemctl enable bluetooth ly@tty2.service
 
     # Create dirs and copy files
     mkdir -p ~/Documents ~/Downloads ~/Pictures ~/Music ~/Videos ~/Projects
